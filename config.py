@@ -12,7 +12,7 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 # Define the database - we are working with
 # SQLite for this example
 # SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'app.db')
-SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://energy:energy168@localhost/commodity?charset=utf8'
+# SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://energy:energy168@localhost/commodity?charset=utf8'
 DATABASE_CONNECT_OPTIONS = {}
 
 # 如果设置成 True (默认情况)，Flask-SQLAlchemy 将会追踪对象的修改并且发送信号。这需要额外的内存， 如果不必要的可以禁用它
@@ -38,18 +38,12 @@ CSRF_ENABLED = True
 # CSRF_SESSION_KEY = "admin168."
 
 # Secret key for signing cookies
-SECRET_KEY = "admin168."
+# SECRET_KEY = "admin168."
 
 # Json config
 # app_path = os.path.realpath(os.path.dirname(__file__))
-JSON_CONFIG_PATH = BASE_DIR + "\\app\\data\\appconfig.json"
+# JSON_CONFIG_PATH = BASE_DIR + "\\app\\data\\appconfig.json"
 
 # 为了加载这些配置变量，通常使用app.config.from_object()
 
 # 来加载，
-
-from flask import Flask
-
-app = Flask(__name__)
-
-app.config.from_object('config')
