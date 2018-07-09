@@ -1,6 +1,6 @@
-#引用方式: app.config.from_object('config'), config.py里面的
+# 引用方式: app.config.from_object('config'), config.py里面的
 
-#key必须是大写的,
+# key必须是大写的,
 # 很多地方就不用写配置了, 比如debug=True, SECRET_KEY等,系统自动从下面取值
 DEBUG = True
 
@@ -35,7 +35,7 @@ CSRF_ENABLED = True
 
 # Use a secure, unique and absolutely secret key for
 # signing the data.
-#CSRF_SESSION_KEY = "admin168."
+# CSRF_SESSION_KEY = "admin168."
 
 # Secret key for signing cookies
 SECRET_KEY = "admin168."
@@ -44,9 +44,9 @@ SECRET_KEY = "admin168."
 # app_path = os.path.realpath(os.path.dirname(__file__))
 JSON_CONFIG_PATH = BASE_DIR + "\\app\\data\\appconfig.json"
 
-#为了加载这些配置变量，通常使用app.config.from_object()
+# 为了加载这些配置变量，通常使用app.config.from_object()
 
-#来加载，
+# 来加载，
 
 from flask import Flask
 
