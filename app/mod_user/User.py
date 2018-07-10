@@ -1,6 +1,6 @@
-class User:
+class User(object):
     def __init__(self,id,password,name,phone,role):
-        set.id=id;
+        self.id=id;
         self.password=password;
         self.name=name;
         self.phone=phone
