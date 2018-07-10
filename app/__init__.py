@@ -1,20 +1,11 @@
-from flask import Flask, render_template
+from flask import  Flask,send_from_directory
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path="/static")
 
 app.config.from_object('config')
-
-
 @app.route('/')
 def hello_world():
-    return 'Hello World!'
-
-
-@app.route('/index')
-def index():
     return render_template('login.html');
 
+from app.mod_user.UserController import *
 
-@app.route('/login')
-def login():
-    return render_template('login.html');

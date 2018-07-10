@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Register</title>
+    <link type="text/css" rel="stylesheet" href="static/stylesheets/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="/static/plugins/jquery.validate/jquery.validate.css">
+    <script src="/static/javascripts/jquery.min.js"></script>
+    <script src="/static/javascripts/bootstrap.min.js"></script>
+    <script src="/static/plugins/jquery.validate/jquery.validate.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <div class="jumbotron">
+        <h1>Register</h1>
+        <p>Block Chain</p>
+    </div>
+    <form action={{url_for("register")}} method="POST">
+        <p>{{error}}</p>
+        <div class="form-group">
+                <label for="userid">User ID</label>
+                <input type="text" class="form-control" name="userid" id="userid" placeholder="userid">
+        </div>
+        <div class="form-group">
+            <label for="username">User Name</label>
+            <input type="text" class="form-control" name="username" id="username" placeholder="username">
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control"  name="password" id="password" placeholder="password">
+        </div>
+        <div class="form-group">
+                <label for="userphone">User Phone</label>
+                <input type="text" class="form-control" name="userphone" id="userphone" placeholder="userphone">
+        </div>
+        <div class="form-group">
+            <label for="userrole">User Role</label>
+            <select name="userrole" class="form-control" id="userrole">
+               <option value="Meteria">Meteria</option>
+               <option value="Product">Product</option>
+               <option value="Transport">Transport</option>
+               <option value="Sale">Sale</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-default">Register</button>
+        <button type="button" onclick="location.replace('/user/login')" class="btn btn-link">LOGIN</button>
+    </form>
+    </div>
+    <script>
+        $( "form" ).validate({
+        rules: {
+            username: {
+                 required: true,
+                 UserNameExist: true
+               },
+            password: {
+                 required: true,
+               },
+            userrole:{
+                 required: true,
+               },
+            userid: {
+                 require:true,
+               },
+            userphone: {
+                 require:true,
+               },
+            }
+       });
+        $.validator.addMethod('UserNameExist', function(value, element) {
+                var obj = {
+                    username: $('#username').val().replace(/\s/g, "")
+                };
+                var data_json = JSON.stringify(obj);
+                var isSuccess = true;
+                $.ajax({
+                    url: "/API_check_UserNameExist",
+                    type: "POST",
+                    data: data_json,
+                    dataType: "json",
+                    async: false,
+                    contentType: "application/json",
+                    success: function(data, textStatus, jqXHR) {
+                            if (data=="11") {
+
+                            }  isSuccess = false;
+                    }
+                });
+                return isSuccess;
+            }, "UserName already exists.");
+    </script>
+</body>
+</html>
