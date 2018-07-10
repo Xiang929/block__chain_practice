@@ -1,4 +1,4 @@
-from flask import render_template, Flask
+from flask import  Flask,send_from_directory
 
 app = Flask(__name__)
 
@@ -30,6 +30,12 @@ def index():
 #     mysql=MysqlService()
 #     mysql.addUser(id,password,name,phone,role)
 #     return '200'
+@app.route('/plugins/<path:path>')
+def egt(path):
+    print('sa')
+    return send_from_directory('static/plugins/jquery.validate',path)
+
 
 from app.mod_user.UserController import *
 
+from static import *

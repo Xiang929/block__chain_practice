@@ -1,9 +1,9 @@
-from flask import Flask, request
-from flask import render_template, Flask
+from flask import  request,render_template
 import json
 from app.mod_user.User import User
 from app.mysql.MysqlService import MysqlService
 from app import app
+
 
 @app.route('/register',methods=['POST','GET'])
 def register():

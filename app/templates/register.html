@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Example</title>
+    <title>User Register</title>
     <link type="text/css" rel="stylesheet" href="static/stylesheets/bootstrap.min.css">
-    <link type="text/css" rel="stylesheet" href="static/plugins/jquery.validate/jquery.validate.css">
-    <script src="static/javascripts/jquery.min.js"></script>
-    <script src="static/javascripts/bootstrap.min.js"></script>
-    <script src="static/plugins/jquery.validate/jquery.validate.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="/static/plugins/jquery.validate/jquery.validate.css">
+    <script src="/static/javascripts/jquery.min.js"></script>
+    <script src="/static/javascripts/bootstrap.min.js"></script>
+    <script src="/static/plugins/jquery.validate/jquery.validate.min.js"></script>
 </head>
 <body>
 
@@ -57,8 +57,8 @@
             password: {
                  required: true,
                },
-            userrole:
-                 required:true,
+            userrole:{
+                 required: true,
                },
             userid: {
                  require:true,
@@ -83,8 +83,8 @@
                     contentType: "application/json",
                     success: function(data, textStatus, jqXHR) {
                             if (data=="11") {
-                                isSuccess = false;
-                            }
+
+                            }  isSuccess = false;
                     }
                 });
                 return isSuccess;
