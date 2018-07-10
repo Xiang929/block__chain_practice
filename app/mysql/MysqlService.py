@@ -6,7 +6,7 @@ class MysqlService:
 
     def addUser(self,id,password,name,phone,role):
         #sql = """INSERT INTO blockchain (id, pass, role, phone, name) VALUES ("+id+","+password+","+name+","+phone+","+role+")"""
-        sql = "INSERT INTO blockchain(id, pass, role, phone, name) \
+        sql = "INSERT INTO blockchain_tbl(id, pass, role, phone, name) \
                VALUES ('%s', '%s', '%s', '%s', '%s' )" % \
               (id,password,name,phone,role)
         try:

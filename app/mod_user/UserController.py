@@ -1,19 +1,27 @@
 from flask import Flask, request
+from flask import render_template, Flask
 import json
 from app.mod_user.User import User
 from app.mysql.MysqlService import MysqlService
 from app import app
 
-@app.route('/user/register',methods=['POST'])
+from flask_login import UserMixin, LoginManager, login_required, current_user, login_user, logout_user
+from functools import wraps
+
+
+@app.route('/register',methods=['POST','GET'])
 def register():
-    data = request.get_data()
-    data = str(data, encoding="utf8")
-    j_data = json.loads(data)
-    id = j_data['id']
-    name = j_data['name']
-    password = j_data['password']
-    phone = j_data['phone']
-    role = j_data['role']
+    if request.method == 'GET':
+        return render_template("register.html")
+    # data = request.get_data()
+    # data = str(data, encoding="utf8")
+    # j_data = json.loads(data)
+
+    id = request.form['userid']
+    name = request.form['username']
+    password = request.form['password']
+    phone = request.form['userphone']
+    role = request.form['userrole']
     user = User(id,password,name,phone,role)
     # add this  user to database
     mysql=MysqlService()
