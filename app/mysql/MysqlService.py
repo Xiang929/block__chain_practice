@@ -1,7 +1,7 @@
 import pymysql
 
 class MysqlService:
-    db = pymysql.connect("localhost", "root", "wzp980402", "blockchain")
+    db = pymysql.connect("localhost", "root", "123456", "blockchain")
     cursor = db.cursor()
 
     def addUser(self,id,password,name,phone,role):
