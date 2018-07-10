@@ -24,8 +24,11 @@ def register():
     mysql.addUser(id,password,name,phone,role)
     return '200'
 
-@app.route('/user/login',methods=['POST'])
+@app.route('/user/login',methods=['POST','GET'])
 def login():
+    if request.method=='GET':
+        return render_template('login.html')
+
     data = request.get_data()
     data = str(data, encoding="utf8")
     j_data = json.loads(data)
@@ -64,6 +67,12 @@ def addGoods():
     data = str(data, encoding="utf8")
     j_data = json.loads(data)
     product_id = j_data['product_id']
-    return 200
+    product_name=j_data['product_name']
+    address=j_data['address']
+    data=j_data['data']
+    discription=j_data['discription']
+    state=j_data['state']
+    # add the goods to the blockchain
+    return '200'
 
 
