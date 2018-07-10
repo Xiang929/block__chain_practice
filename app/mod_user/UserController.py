@@ -9,9 +9,6 @@ from app import app
 def register():
     if request.method == 'GET':
         return render_template("register.html")
-    # data = request.get_data()
-    # data = str(data, encoding="utf8")
-    # j_data = json.loads(data)
 
     id = request.form['userid']
     name = request.form['username']
@@ -28,20 +25,16 @@ def register():
 def login():
     if request.method=='GET':
         return render_template('login.html')
-
-    data = request.get_data()
-    data = str(data, encoding="utf8")
-    j_data = json.loads(data)
-    id = j_data['id']
-    password = j_data['password']
+    print(request.get_data())
+    id = request.form['username']
+    password = request.form['password']
     # get the password from database
     mysql = MysqlService()
     rea_pass = mysql.getPassById(id)
-    print('realpass is'+str(rea_pass))
     if password == rea_pass:
-        return '200'
+        return render_template('main.html')
     else:
-        return 'pass error'
+        return render_template('fail.html')
 
 @app.route('/user/getGoods',methods=['GET''POST'])
 def getGood():

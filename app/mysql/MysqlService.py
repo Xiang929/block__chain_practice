@@ -20,10 +20,8 @@ class MysqlService:
         try:
             self.cursor.execute(sql)
             results = self.cursor.fetchall()
-            #print(results)
             for row in results:
                 password = row[0]
-                print(password)
                 return password
         except:
             self.db.rollback()
