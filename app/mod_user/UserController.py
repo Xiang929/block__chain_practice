@@ -36,9 +36,13 @@ def login():
     id = j_data['id']
     password = j_data['password']
     # get the password from database
-    rea_pass = ''
+    mysql = MysqlService()
+    rea_pass = mysql.getPassById(id)
+    print('realpass is'+str(rea_pass))
     if password == rea_pass:
         return '200'
+    else:
+        return 'pass error'
 
 @app.route('/user/getGoods',methods=['GET''POST'])
 def getGood():
