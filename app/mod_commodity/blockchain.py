@@ -196,6 +196,23 @@ class Blockchain:
         guess_hash = hashlib.sha256(guess).hexdigest()
         return guess_hash[:4] == "0000", guess_hash
 
+    @staticmethod
+    def add_block(values):
+        block = blockchain.new_block(values)
+
+        if block is not None:
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def full_chain():
+        response = {
+            'chain': blockchain.chain,
+            'length': len(blockchain.chain),
+        }
+        return jsonify(response), 200
+
 
 # Instantiate the Node
 app = Flask(__name__)
@@ -205,25 +222,6 @@ node_identifier = str(uuid4()).replace('-', '')
 
 # Instantiate the Blockchain
 blockchain = Blockchain()
-
-
-@app.route('/mine', methods=['GET'])
-def add_block(values):
-    block = blockchain.new_block(values)
-
-    if block is not None:
-        return True
-    else:
-        return False
-
-
-@app.route('/chain', methods=['GET'])
-def full_chain():
-    response = {
-        'chain': blockchain.chain,
-        'length': len(blockchain.chain),
-    }
-    return jsonify(response), 200
 
 
 @app.route('/nodes/register', methods=['POST'])
@@ -260,14 +258,3 @@ def consensus():
         }
 
     return jsonify(response), 200
-
-
-if __name__ == '__main__':
-    from argparse import ArgumentParser
-
-    parser = ArgumentParser()
-    parser.add_argument('-p', '--port', default=5000, type=int, help='port to listen on')
-    args = parser.parse_args()
-    port = args.port
-
-    app.run(host='127.0.0.1', port=port)
