@@ -3,7 +3,7 @@ import json
 from app.mod_user.User import User
 from app.mysql.MysqlService import MysqlService
 from app import app
-
+from app.mod_commodity.blockchain import Blockchain
 
 @app.route('/register',methods=['POST','GET'])
 def register():
@@ -49,21 +49,24 @@ def editUser( password, newpass):
         return 'error'
 
 
-@app.route('/user/getGoods',methods=['GET''POST'])
+@app.route('/user/getGoods',methods=['GET','POST'])
 def getGood():
-    data = request.get_data()
-    data = str(data, encoding="utf8")
-    j_data = json.loads(data)
-    if request.method=='POST':
-        id = j_data['id']
-        print(id)
-    else:
-        print('get')
+    # data = request.get_data()
+    # data = str(data, encoding="utf8")
+    # j_data = json.loads(data)
+    # if request.method=='POST':
+    #     id = j_data['id']
+    #     print(id)
+    # else:
+    #     print('get')
+
     #get his role
     #get info from the block by his role
-    return '200'
+    #blockchain = Blockchain()
+    res=Blockchain.full_chain()
+    return res
 
-@app.route('/users/addGoods',methods=['POST'])
+@app.route('/user/addGoods',methods=['POST'])
 def addGoods():
     '''
     get the info of goods and add it to the block
@@ -79,6 +82,13 @@ def addGoods():
     discription=j_data['discription']
     state=j_data['state']
     # add the goods to the blockchain
-    return '200'
+    dict={'number':product_id,'name':product_name,'address':address,'date':data,'description':discription,'status':state}
+    #block=Blockchain()
+    res =Blockchain.add_block(dict)
+    if res is not None:
+        return 'success'
+    else:
+        return 'fail'
+
 
 

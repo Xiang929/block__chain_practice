@@ -108,13 +108,14 @@ class Blockchain:
                 'index': index,
                 'timestamp': time(),
                 'transactions': self.transactions,
+                'proof': self.proof
             }
             if index == 1:
                 current_hash = blockchain.proof_of_work(block)
                 previous_hash = '0'
             else:
                 current_hash = blockchain.proof_of_work(block)
-                previous_hash = self.last_block['previous_hash']
+                previous_hash = self.last_block['current_hash']
 
             block['proof'] = self.proof
             block['current_hash'] = current_hash
