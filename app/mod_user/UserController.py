@@ -36,6 +36,19 @@ def login():
     else:
         return render_template('fail.html')
 
+@app.route('/user/edit',methods=['GET','POST'])
+def editUser( password, newpass):
+    id = request.form['username']
+    password = request.form['password']
+    newpass = request.form['newpass']
+    mysql = MysqlService()
+    rea_pass = mysql.getPassById(id)
+    if rea_pass == password:
+        mysql.UpdateMessage(id, newpass)
+    else:
+        return 'error'
+
+
 @app.route('/user/getGoods',methods=['GET''POST'])
 def getGood():
     data = request.get_data()
