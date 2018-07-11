@@ -19,7 +19,7 @@ def register():
     # add this  user to database
     mysql=MysqlService()
     mysql.addUser(id,password,name,phone,role)
-    return '200'
+    return render_template('login.html')
 
 @app.route('/user/login',methods=['POST','GET'])
 def login():
