@@ -1,19 +1,17 @@
-from flask import Flask
-from app.mod_qrcode.qrcode import QrCode
+from flask import  Flask,send_from_directory
 
 app = Flask(__name__, static_url_path="/static")
 
 app.config.from_object('config')
 
-
 @app.route('/')
-def hello_world():
-    return render_template('login.html');
+@app.route('/searchGoods')
+def search_goods():
+    return render_template('searchGoods.html');
 
 
-@app.route('/main')
-def main():
-    return render_template('main.html');
+@app.route('/createGoods')
+def create_goods():
+    return render_template('createGoods.html');
 
 from app.mod_user.UserController import *
-from app.mod_qrcode.QrcodeController import *

@@ -1,0 +1,166 @@
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link href="https://fonts.googleapis.com/css?family=Lato|Raleway:700,900" rel="stylesheet">
+<link rel="stylesheet" href="/static/Chipoer/maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="/static/Chipoer/cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+<link rel="stylesheet" href="/static/Chipoer/getchipper.com/static/css/main.css">
+
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="manifest" href="https://getchipper.com/manifest.json">
+<link rel="mask-icon" href="https://getchipper.com/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="theme-color" content="#ffffff">
+
+<script src="/static/Chipoer/code.jquery.com/jquery-3.2.1.slim.js" integrity="sha256-tA8y0XqiwnpwmOIl3SGAcFl2RvxHjA8qp0+1uCGmRmg=" crossorigin="anonymous"></script>
+<script src="/static/Chipoer/maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://getchipper.com/static/js/main.js"></script>
+
+		<title>北交大区块链商品溯源系统</title>
+		<meta name="description" content="Get information for Chipper, the tool that helps students stay organized and better manage their time." />
+		<meta name="keywords" content="Chipper,study planner,homework planner,organizer,student,college,time management,study calendar" />
+	</head>
+	<body>
+
+		<section class="container-fluid cover cover-schools">
+			
+
+<div class="navlinks">
+	<a href="/searchGoods"><small class="glyphicon glyphicon-education" aria-hidden="true"></small> Search Goods</a>
+	<a href="/createGoods" class="active"><small class="glyphicon glyphicon-apple" aria-hidden="true"></small> Create Goods</a>
+	<a href="https://getchipper.com/about/" class="hidden-xs"><small class="glyphicon glyphicon-star" aria-hidden="true"></small> Modify Goods</a>
+	<a href="https://getchipper.com/contact/" class="hidden-xs"><small class="glyphicon glyphicon-comment" aria-hidden="true"></small> User Infor</a>
+	<div class="btn-group btn-group-lg" role="group" aria-label="Log in button">
+		
+		<a href="https://app.getchipper.com/" class="btn btn-primary btn-lg" role="button">Log in</a>
+		
+	</div>
+</div>
+
+			<div class="container no-padding-on-mobile">
+				<div class="jumbotron">
+					
+					<h1><span class="line-break">Create Good's Block .</span> <span class="line-break">To Chain.</span></h1>
+					<p>Please enter the Good's information to create the information.</p>
+					
+				</div>
+			</div>
+		</section>
+
+		
+		<section class="container-fluid">
+			<h3 class="text-center">Please enter the Good's information to create the information.</h3>
+			<div class="row">
+				<div class="col-sm-6 col-sm-offset-3">
+					<form action="." method="post">
+						
+							<div class="form-group">
+								<label>Product ID</label> 
+								<input type="text" name="product_id" placeholder="" class="form-control" id="product_id" required />
+								
+								
+							</div>
+						
+							<div class="form-group">
+								<label>Product Name</label> 
+								<input type="text" name="product_name" placeholder="" class="form-control" id="product_name" required />
+								
+								
+							</div>
+						
+							<div class="form-group">
+								<label>Pruduct Description</label> 
+								<textarea name="product_des" rows="3" placeholder="Please enter the description" cols="40" id="product_des" class="form-control">
+									</textarea>
+								
+								
+							</div>
+						
+							<div class="form-group">
+								<label>Address</label> 
+								<input type="text" name="address" placeholder="" class="form-control" id="address" required />
+								
+								
+							</div>
+						
+							<div class="form-group">
+								<label>Date</label> 
+								<input type="text" name="date" placeholder="" class="form-control" id="date" required />
+								
+								
+							</div>
+						
+							<div class="form-group">
+								<label>Status</label> 
+								<p> {{status}}</p>
+								
+								
+							</div>
+						
+						<button type="submit" class="btn btn-primary btn-lg">Create</button>
+					</form>
+				</div>
+			</div>
+		</section>
+		
+
+		
+		<footer class="container-fluid footer">
+				<div class="row">
+					<div class="col-sm-3 col-sm-offset-2">
+						<h5>Project Manager</h5>
+						<ul>
+							<li><a href="">Wang Zhi</a></li>
+						</ul>
+					</div>
+					<div class="col-sm-3">
+						<h5>Project Member &amp; Staff</h5>
+						<ul>
+							<li><a href="">Xiang</a></li>
+							<li><a href="">LongLong</a></li>
+							<li><a href="">Liu Ruri</a></li>
+							<li><a href="">Wang ZiPeng</a></li>
+						</ul>
+					</div>
+					<div class="col-sm-3">
+						<h5>Thank Professor</h5>
+						<ul>
+							<li><a href="">Wang QingChao</a></li>
+						</ul>
+					</div>
+				</div>
+				<!--<div class="container">-->
+					<p class="text-center">Let's get it done. &copy; 2018 BJTU BlockChain Team. <a href="" target="_blank">Terms of Service</a> &middot; <a href="" target="_blank">Privacy Policy</a></p>
+				<!--</div>-->
+			</footer>
+			
+
+		
+<script>
+  !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t){var e=document.createElement("script");e.type="text/javascript";e.async=!0;e.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)};analytics.SNIPPET_VERSION="4.0.0";
+  
+  analytics.load("PoOi7kmm4SuDrmCQsEInb2trH8hAlkmD");
+  
+  analytics.page();
+  }}();
+</script>
+
+
+		<script>
+			analytics.ready(function() {
+				analytics.track("Schools Page Visited");
+				analytics.page("Schools Page");
+			});
+		</script>
+
+	</body>
+</html>
+
