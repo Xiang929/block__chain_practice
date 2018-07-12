@@ -32,7 +32,7 @@ def login():
     mysql = MysqlService()
     rea_pass = mysql.getPassById(id)
     if password == rea_pass:
-        return render_template('main.html')
+        return render_template('searchGoods.html')
     else:
         return render_template('fail.html')
 
@@ -72,23 +72,20 @@ def addGoods():
     get the info of goods and add it to the block
     :return:
     '''
-    data = request.get_data()
-    data = str(data, encoding="utf8")
-    j_data = json.loads(data)
-    product_id = j_data['product_id']
-    product_name=j_data['product_name']
-    address=j_data['address']
-    data=j_data['data']
-    discription=j_data['discription']
-    state=j_data['state']
+    product_id = request.form['product_id']
+    product_name=request.form['product_name']
+    address=request.form['address']
+    data=request.form['date']
+    discription=request.form['product_des']
+    state=request.form['status']
     # add the goods to the blockchain
     dict={'number':product_id,'name':product_name,'address':address,'date':data,'description':discription,'status':state}
     #block=Blockchain()
     res =Blockchain.add_block(dict)
     if res is not None:
-        return 'success'
+        return render_template('createGoods.html',res='success')
     else:
-        return 'fail'
+        return render_template('createGoods.html',res='fail')
 
 
 

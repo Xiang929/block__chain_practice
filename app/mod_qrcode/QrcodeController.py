@@ -7,7 +7,7 @@ def qrcode():
     print(request.get_data())
     #product_id = request.form['product_id']
     product_id='123'
-    data={
+    data = {
         'product_id':product_id
     }
     path='app/static/images/'+product_id+'.jpg'
