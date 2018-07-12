@@ -16,4 +16,4 @@ def modify_goods():
 
 @app.route('/userInfor')
 def userInfor():
-    return render_template('userInfor.html')
+    return render_template('userInfor.html',userid='id',username='Jaye',userphone='11111',userrole='生产商')
