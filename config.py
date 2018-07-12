@@ -47,3 +47,7 @@ CSRF_ENABLED = True
 # 为了加载这些配置变量，通常使用app.config.from_object()
 
 # 来加载，
+# ZMQ Config
+SERVER = '192.144.156.204'
+PRIVATE_SERVER = '172.21.0.2'
+PORT = '8080'

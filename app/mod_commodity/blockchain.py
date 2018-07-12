@@ -9,10 +9,11 @@ from flask import Flask, jsonify, request
 
 
 class Blockchain:
+    __slots__ = ('chain', '__transactions', 'nodes', 'proof')
+
     def __init__(self):
-        self.current_actions = []
         self.chain = []
-        self.transactions = {}
+        self.__transactions = {}
         self.nodes = set()
         self.proof = 0
 
@@ -93,37 +94,43 @@ class Blockchain:
 
         return False
 
-    def new_block(self, values):
+    def new_block(self, values, status=0):
         """
         Create a new Block in the Blockchain
+        :param status: operation type, 0 is add, 1 is modify
         :param values: product values
         :type values: dict
         :return: New Block
         """
+
+        if status == 1:
+            chain_index = values['index']
+            del values['index']
+
         if not Blockchain.new_transaction(self, values):
             return None
         else:
             index = len(self.chain) + 1
-            block = {
-                'index': index,
-                'timestamp': time(),
-                'transactions': self.transactions,
-                'proof': self.proof
-            }
             if index == 1:
-                current_hash = blockchain.proof_of_work(block)
                 previous_hash = '0'
             else:
-                current_hash = blockchain.proof_of_work(block)
-                previous_hash = self.last_block['current_hash']
+                if status == 0:
+                    previous_hash = self.last_block['current_hash']
+                else:
+                    previous_hash = self.chain[chain_index - 1].get('current_hash')
+            block = {
+                'previous_hash': previous_hash,
+                'index': index,
+                'timestamp': time(),
+                'transactions': self.__transactions,
+                'proof': self.proof
+            }
+            current_hash = self.proof_of_work(block)
 
             block['proof'] = self.proof
             block['current_hash'] = current_hash
-            block['previous_hash'] = previous_hash
             # Reset the current list of transactions
-            self.transactions = {}
 
-            self.chain.append(block)
             return block
 
     def new_transaction(self, values):
@@ -137,7 +144,7 @@ class Blockchain:
         if not all(value in values for value in required):
             return False
         else:
-            self.transactions = {
+            self.__transactions = {
                 'number': values['number'],
                 'name': values['name'],
                 'address': values['address'],
@@ -161,58 +168,75 @@ class Blockchain:
         # We must make sure that the Dictionary is Ordered, or we'll have inconsistent hashes
         return hashlib.sha256(block_string).hexdigest()
 
-    def proof_of_work(self, last_block):
+    def proof_of_work(self, block):
         """
         Simple Proof of Work Algorithm:
          - Find a number p' such that hash(pp') contains leading 4 zeroes
          - Where p is the previous proof, and p' is the new proof
 
-        :param last_block: <dict> last Block
+        :param block: <dict> new Block
         :return: <int>
         """
-
-        last_proof = last_block['proof']
-        block_string = json.dumps(last_block, sort_keys=True).encode()
-        last_hash = self.hash(block_string)
+        if len(self.chain) == 0:
+            last_proof = self.last_block['proof']
+        else:
+            last_proof = 0
+        block_string = json.dumps(block, sort_keys=True).encode()
         self.proof = 0
 
         while True:
-            flag, current_hash = self.valid_proof(last_proof, self.proof, last_hash)
+            _hash = self.hash(block_string)
+            flag, current_hash = self.valid_proof(last_proof, self.proof, _hash)
             self.proof += 1
             if flag is True:
                 break
         return current_hash
 
     @staticmethod
-    def valid_proof(last_proof, proof, last_hash):
+    def valid_proof(last_proof, proof, _hash):
         """
         Validates the Proof
         :param last_proof: <int> Previous Proof
         :param proof: <int> Current Proof
-        :param last_hash: <str> The hash of the Previous Block
+        :param _hash: <str> The hash of the New Block
         :return: <bool> True if correct, False if not.
         """
 
-        guess = '{0}{1}{2}'.format(last_proof, proof, last_hash).encode()
+        guess = '{0}{1}{2}'.format(last_proof, proof, _hash).encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
         return guess_hash[:4] == "0000", guess_hash
 
-    @staticmethod
-    def add_block(values):
-        block = blockchain.new_block(values)
-
-        if block is not None:
-            return True
-        else:
+    def add_block(self, block):
+        """
+        :param block: new block
+        :type block: dict
+        """
+        if block is None:
             return False
 
-    @staticmethod
-    def full_chain():
+        self.chain.append(block)
+        self.__transactions = {}
+
+    def full_chain(self):
         response = {
-            'chain': blockchain.chain,
-            'length': len(blockchain.chain),
+            'chain': self.chain,
+            'length': len(self.chain),
         }
         return jsonify(response), 200
+
+    def modify_block(self, transactions):
+        """
+        :param transactions: modified transaction information
+        :type transactions: dict
+        """
+        chain_index = transactions['index']
+        block_list = []
+        block = self.new_block(transactions)
+        block_list.append(block, 1)
+        for index in range(chain_index, len(self.chain)):
+            transactions = self.chain[index].get('transactions')
+            block = self.new_block(transactions, 1)
+            block_list.append(block)
 
 
 # Instantiate the Node
@@ -220,9 +244,6 @@ app = Flask(__name__)
 
 # Generate a globally unique address for this node
 node_identifier = str(uuid4()).replace('-', '')
-
-# Instantiate the Blockchain
-blockchain = Blockchain()
 
 
 @app.route('/nodes/register', methods=['POST'])
@@ -234,28 +255,28 @@ def register_nodes():
         return "Error: Please supply a valid list of nodes", 400
 
     for node in nodes:
-        blockchain.register_node(node)
+        Blockchain.register_node(node)
 
     response = {
         'message': 'New nodes have been added',
-        'total_nodes': list(blockchain.nodes),
+        'total_nodes': list(Blockchain.nodes),
     }
     return jsonify(response), 201
 
 
 @app.route('/nodes/resolve', methods=['GET'])
 def consensus():
-    replaced = blockchain.resolve_conflicts()
+    replaced = Blockchain.resolve_conflicts()
 
     if replaced:
         response = {
             'message': 'Our chain was replaced',
-            'new_chain': blockchain.chain
+            'new_chain': Blockchain.chain
         }
     else:
         response = {
             'message': 'Our chain is authoritative',
-            'chain': blockchain.chain
+            'chain': Blockchain.chain
         }
 
     return jsonify(response), 200
