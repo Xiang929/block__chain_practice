@@ -55,6 +55,6 @@ PORT = '8080'
 # Mysql config
 MYSQL_URL = 'localhost'
 MYSQL_USERNAME = 'root'
-MYSQL_PASSWORD = ''
+MYSQL_PASSWORD = '123456'
 MYSQL_DATABASE = 'blockchain'
 MYSQL_PORT = ''
