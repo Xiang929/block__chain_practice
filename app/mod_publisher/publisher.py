@@ -20,4 +20,6 @@ class Publisher(object):
             elif topic == b'modify block':
                 socket.send_multipart([topic, content])
             elif topic == b'modify block finished':
+                socket.send_multipart([b'replace blockchain', content])
+            else:
                 pass

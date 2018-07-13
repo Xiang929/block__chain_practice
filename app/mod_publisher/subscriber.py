@@ -38,7 +38,7 @@ class Subscriber(object):
             modify_string = json.dumps(modify_dict)
             self.zmqSubSocket.send_multipart([b'modify block finished',
                                               bytes(modify_string, encoding='utf-8')])
-        elif topic == b'modify new blockchain':
+        elif topic == b'replace blockchain':
             body_string = bytes.decode(body)
             body_dict = json.loads(body_string)
             chain_index = body_dict['index']
