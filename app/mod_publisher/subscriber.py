@@ -2,9 +2,10 @@ import functools
 import signal
 
 import zmq
+import zmq.asyncio
 import json
 import asyncio
-from zmq import asyncio
+from config import *
 
 from app.mod_commodity.blockchain import Blockchain
 
@@ -16,17 +17,16 @@ class Subscriber(object):
         self.blockchain = Blockchain()
         self.zmqSubSocket = self.zmqContext.socket(zmq.SUB)
         self.zmqSubSocket.setsockopt_string(zmq.SUBSCRIBE, '')
-        self.zmqSubSocket.connect('tcp:////{}:{}'.format(host, port))
+        self.zmqSubSocket.connect("tcp://%s:%s" % (host, port))
 
-    async def handle(self):
-        [topic, body] = await self.zmqSubSocket.recv_multipart()
+    def handle(self):
+        [topic, body] = self.zmqSubSocket.recv_multipart()
+        print(topic, body)
         if topic == b'new block':
             transactions_string = bytes.decode(body)
             transactions = json.loads(transactions_string)
-            new_block = await self.blockchain.new_block(transactions)
-            new_block_string = json.dumps(new_block)
-            self.zmqSubSocket.send_multipart([b'new block finished',
-                                              bytes(new_block_string, encoding='utf-8')])
+            new_block = self.blockchain.new_block(transactions)
+            self.send_message('new block finished', new_block)
         elif topic == b'creat block':
             block_string = bytes.decode(body)
             block_obj = json.loads(block_string)
@@ -35,10 +35,8 @@ class Subscriber(object):
             transactions_string = bytes.decode(body)
             transactions = json.loads(transactions_string)
             modify_dict = self.blockchain.modify_block(transactions)
-            modify_string = json.dumps(modify_dict)
-            self.zmqSubSocket.send_multipart([b'modify block finished',
-                                              bytes(modify_string, encoding='utf-8')])
-        elif topic == b'replace blockchain':
+            self.send_message('modify block finished', modify_dict)
+        elif topic == 'replace blockchain':
             body_string = bytes.decode(body)
             body_dict = json.loads(body_string)
             chain_index = body_dict['index']
@@ -47,7 +45,7 @@ class Subscriber(object):
             for index in range(chain_index - 1, len(self.blockchain.chain)):
                 self.blockchain.chain[index - 1] = block_list[i]
                 i += 1
-        asyncio.ensure_future(self.handle())
+        # asyncio.ensure_future(self.handle())
 
     def send_message(self, message, values):
         """
@@ -55,15 +53,19 @@ class Subscriber(object):
         :param message: message to send
         :param values: product information
         """
+        context = zmq.Context.instance()
+        socket = context.socket(zmq.REQ)
+        socket.connect('tcp://{}:{}'.format(SERVER, WRITE_PORT))
         message_bytes = str.encode(message)
         values_string = json.dumps(values)
-        values_bytes = str.encode(values_string)
-        self.zmqSubSocket.send_multipart([message_bytes, values_bytes])
+        values_bytes = str.encode(values_string, encoding='utf-8')
+        socket.send_multipart([message_bytes, values_bytes])
+        # self.start()
+        ret = socket.recv()
+        print(ret)
+        self.handle()
 
     def start(self):
-        for signame in ('SIGINT', 'SIGTERM'):
-            self.loop.add_signal_handler(getattr(signal, signame),
-                                         functools.partial(self.stop, signame))
         self.loop.create_task(self.handle())
         self.loop.run_forever()
 
