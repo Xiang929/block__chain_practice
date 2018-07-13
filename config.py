@@ -48,9 +48,10 @@ CSRF_ENABLED = True
 
 # 来加载，
 # ZMQ Config
-SERVER = '192.144.156.204'
+SERVER = '127.0.0.1'
 PRIVATE_SERVER = '172.21.0.2'
 PORT = '8080'
+WRITE_PORT='5001'
 
 # Mysql config
 MYSQL_URL = 'localhost'

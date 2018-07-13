@@ -13,7 +13,7 @@ from app.mod_commodity.blockchain import Blockchain
 class Subscriber(object):
     def __init__(self, host, port):
         self.loop = asyncio.get_event_loop()
-        self.zmqContext = zmq.asyncio.Context()
+        self.zmqContext = zmq.Context()
         self.blockchain = Blockchain()
         self.zmqSubSocket = self.zmqContext.socket(zmq.SUB)
         self.zmqSubSocket.setsockopt_string(zmq.SUBSCRIBE, '')
