@@ -231,11 +231,12 @@ class Blockchain:
         chain_index = transactions['index']
         block_list = []
         block = self.chain[chain_index - 1]
+        del transactions['index']
         block['transactions'] = transactions
         block, current_hash = self.__new_block_for_modify(block)
         block_list.append(block)
         for index in range(chain_index, len(self.chain)):
-            block = self.chain[index - 1]
+            block = self.chain[index]
             block['previous_hash'] = current_hash
             block, current_hash = self.__new_block_for_modify(block)
             block_list.append(block)
