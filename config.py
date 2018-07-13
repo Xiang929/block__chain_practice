@@ -51,3 +51,10 @@ CSRF_ENABLED = True
 SERVER = '192.144.156.204'
 PRIVATE_SERVER = '172.21.0.2'
 PORT = '8080'
+
+# Mysql config
+MYSQL_URL = 'localhost'
+MYSQL_USERNAME = 'root'
+MYSQL_PASSWORD = ''
+MYSQL_DATABASE = 'blockchain'
+MYSQL_PORT = ''

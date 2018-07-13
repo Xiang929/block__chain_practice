@@ -53,7 +53,7 @@ class Blockchain:
                 return False
 
             # Check that the Proof of Work is correct
-            if not self.valid_proof(last_block['proof'], block['proof'], last_block_hash):
+            if not self.valid_proof(block['proof'], last_block_hash):
                 return False
 
             last_block = block
@@ -94,18 +94,13 @@ class Blockchain:
 
         return False
 
-    def new_block(self, values, status=0):
+    def new_block(self, values):
         """
         Create a new Block in the Blockchain
-        :param status: operation type, 0 is add, 1 is modify
         :param values: product values
         :type values: dict
         :return: New Block
         """
-
-        if status == 1:
-            chain_index = values['index']
-            del values['index']
 
         if not Blockchain.new_transaction(self, values):
             return None
@@ -114,10 +109,7 @@ class Blockchain:
             if index == 1:
                 previous_hash = '0'
             else:
-                if status == 0:
-                    previous_hash = self.last_block['current_hash']
-                else:
-                    previous_hash = self.chain[chain_index - 1].get('current_hash')
+                previous_hash = self.last_block['current_hash']
             block = {
                 'previous_hash': previous_hash,
                 'index': index,
@@ -132,6 +124,18 @@ class Blockchain:
             # Reset the current list of transactions
 
             return block
+
+    def __new_block_for_modify(self, block: dict):
+        """
+        :param block： new block:
+        """
+
+        current_hash = self.proof_of_work(block)
+        block['time'] = time()
+        block['proof'] = self.proof
+        block['current_hash'] = current_hash
+
+        return block, current_hash
 
     def new_transaction(self, values):
         """
@@ -177,32 +181,27 @@ class Blockchain:
         :param block: <dict> new Block
         :return: <int>
         """
-        if len(self.chain) == 0:
-            last_proof = self.last_block['proof']
-        else:
-            last_proof = 0
         block_string = json.dumps(block, sort_keys=True).encode()
         self.proof = 0
 
         while True:
             _hash = self.hash(block_string)
-            flag, current_hash = self.valid_proof(last_proof, self.proof, _hash)
+            flag, current_hash = self.valid_proof(self.proof, _hash)
             self.proof += 1
             if flag is True:
                 break
         return current_hash
 
     @staticmethod
-    def valid_proof(last_proof, proof, _hash):
+    def valid_proof(proof, _hash):
         """
         Validates the Proof
-        :param last_proof: <int> Previous Proof
         :param proof: <int> Current Proof
         :param _hash: <str> The hash of the New Block
         :return: <bool> True if correct, False if not.
         """
 
-        guess = '{0}{1}{2}'.format(last_proof, proof, _hash).encode()
+        guess = '{0}{1}'.format(proof, _hash).encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
         return guess_hash[:4] == "0000", guess_hash
 
@@ -231,12 +230,18 @@ class Blockchain:
         """
         chain_index = transactions['index']
         block_list = []
-        block = self.new_block(transactions)
-        block_list.append(block, 1)
+        block = self.chain[chain_index - 1]
+        block['transactions'] = transactions
+        block, current_hash = self.__new_block_for_modify(block)
+        block_list.append(block)
         for index in range(chain_index, len(self.chain)):
-            transactions = self.chain[index].get('transactions')
-            block = self.new_block(transactions, 1)
+            block = self.chain[index - 1]
+            block['previous_hash'] = current_hash
+            block, current_hash = self.__new_block_for_modify(block)
             block_list.append(block)
+        modify_dict = {'index': chain_index,
+                       'blocks': block_list}
+        return modify_dict
 
 
 # Instantiate the Node

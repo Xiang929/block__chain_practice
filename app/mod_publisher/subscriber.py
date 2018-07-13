@@ -7,7 +7,6 @@ import asyncio
 from zmq import asyncio
 
 from app.mod_commodity.blockchain import Blockchain
-from config import *
 
 
 class Subscriber(object):
@@ -24,10 +23,10 @@ class Subscriber(object):
         if topic == b'new block':
             transactions_string = bytes.decode(body)
             transactions = json.loads(transactions_string)
-            new_block = self.blockchain.new_block(transactions)
+            new_block = await self.blockchain.new_block(transactions)
             new_block_string = json.dumps(new_block)
             self.zmqSubSocket.send_multipart([b'new block finished',
-                                             bytes(new_block_string, encoding='utf-8')])
+                                              bytes(new_block_string, encoding='utf-8')])
         elif topic == b'creat block':
             block_string = bytes.decode(body)
             block_obj = json.loads(block_string)
@@ -35,7 +34,19 @@ class Subscriber(object):
         elif topic == b'modify block':
             transactions_string = bytes.decode(body)
             transactions = json.loads(transactions_string)
-            self.blockchain.modify_block(transactions)
+            modify_dict = self.blockchain.modify_block(transactions)
+            modify_string = json.dumps(modify_dict)
+            self.zmqSubSocket.send_multipart([b'modify block finished',
+                                              bytes(modify_string, encoding='utf-8')])
+        elif topic == b'modify new blockchain':
+            body_string = bytes.decode(body)
+            body_dict = json.loads(body_string)
+            chain_index = body_dict['index']
+            block_list = body_dict['blocks']
+            i = 0
+            for index in range(chain_index - 1, len(self.blockchain.chain)):
+                self.blockchain.chain[index - 1] = block_list[i]
+                i += 1
         asyncio.ensure_future(self.handle())
 
     def send_message(self, message, values):
