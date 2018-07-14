@@ -51,7 +51,7 @@ CSRF_ENABLED = True
 SERVER = '127.0.0.1'
 PRIVATE_SERVER = '127.0.0.1'
 PORT = '8080'
-WRITE_PORT='5001'
+WRITE_PORT = '2929'
 
 # Mysql config
 MYSQL_URL = 'localhost'

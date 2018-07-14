@@ -192,20 +192,20 @@ class Blockchain:
         if modify is False:
             while True:
                 _hash = self.hash(block_string)
-                flag, current_hash = self.valid_proof(self.proof, _hash)
+                new_block_flag, current_hash = self.valid_proof(self.proof, _hash)
                 self.proof += 1
-                if flag is True:
+                if new_block_flag:
                     break
         else:
             while True:
                 _hash = self.hash(block_string)
-                flag, current_hash = self.valid_proof(self.proof, _hash)
+                modify_block_flag, current_hash = self.valid_proof(self.proof, _hash)
                 if self.proof % 1000000 == 0:
                     self.__modify_count += self.proof
                     if self.__modify_count > MAX_COUNT:
                         return None
                 self.proof += 1
-                if flag is True:
+                if modify_block_flag is True:
                     break
         return current_hash
 

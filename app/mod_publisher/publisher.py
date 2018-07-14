@@ -1,7 +1,5 @@
 import zmq
-import asyncio
 import zmq.asyncio
-from zmq.error import ZMQError
 from config import *
 
 
@@ -12,33 +10,38 @@ class Publisher(object):
         self.context = zmq.Context.instance()
         self.socket = self.context.socket(zmq.PUB)
         self.socket.bind('tcp://{0}:{1}'.format(host, port))
+        self.new_block_flag = False
+        self.modify_block_flag = False
 
-    def publiser_rep(self):
+    def publisher_rep(self):
         context = zmq.Context.instance()
         socket = context.socket(zmq.REP)
         socket.bind('tcp://{0}:{1}'.format(SERVER, WRITE_PORT))
 
         while True:
             [topic, body] = socket.recv_multipart()
-            socket.send(b'recived')
+            print(topic, body)
+            socket.send(b'received')
             if topic == b'new block':
-                self.publiser_publish(topic, body)
+                self.new_block_flag = False
+                self.publisher_publish(topic, body)
             elif topic == b'new block finished':
-                self.publiser_publish(topic, body)
+                self.new_block_flag = True
+                self.publisher_publish(topic, body)
             elif topic == b'modify block':
-                self.publiser_publish(topic, body)
+                self.modify_block_flag = False
+                self.publisher_publish(topic, body)
             elif topic == b'modify block finished':
-                self.publiser_publish(topic, body)
+                self.modify_block_flag = True
+                self.publisher_publish(topic, body)
             else:
                 pass
 
-    def publiser_publish(self, topic, body):
-        print(topic, body)
+    def publisher_publish(self, topic, body):
         if topic == b'new block':
             self.socket.send_multipart([topic, body])
-            print('send')
         elif topic == b'new block finished':
-            self.socket.send_multipart([b'creat block', body])
+            self.socket.send_multipart([b'create block', body])
         elif topic == b'modify block':
             self.socket.send_multipart([topic, body])
         elif topic == b'modify block finished':
@@ -49,4 +52,4 @@ class Publisher(object):
 
 if __name__ == '__main__':
     publisher = Publisher(SERVER, PORT)
-    publisher.publiser_rep()
+    publisher.publisher_rep()
