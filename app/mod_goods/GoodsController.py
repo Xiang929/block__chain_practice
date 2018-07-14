@@ -2,7 +2,6 @@ from app import app
 from flask import render_template,request,g, redirect,url_for
 from app.mod_publisher.subscriber import Subscriber
 from config import *
-from app import mod_user
 from app import MysqlService
 
 subscriber = Subscriber(SERVER, PORT)
@@ -57,7 +56,7 @@ def getGood():
     # get his role
     # get info from the block by his role
     # blockchain = Blockchain()
-    res = subscriber.blockchain.full_chain()
+    res = subscriber.block_chain.full_chain()
     return res
 
 
