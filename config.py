@@ -2,7 +2,7 @@
 
 # key必须是大写的,
 # 很多地方就不用写配置了, 比如debug=True, SECRET_KEY等,系统自动从下面取值
-DEBUG = True
+DEBUG = False
 
 # Define the application directory
 import os
@@ -49,7 +49,7 @@ CSRF_ENABLED = True
 # 来加载，
 # ZMQ Config
 SERVER = '127.0.0.1'
-PRIVATE_SERVER = '172.21.0.2'
+PRIVATE_SERVER = '127.0.0.1'
 PORT = '8080'
 WRITE_PORT='5001'
 
