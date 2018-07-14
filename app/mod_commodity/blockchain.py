@@ -203,7 +203,7 @@ class Blockchain:
 
         guess = '{0}{1}'.format(proof, _hash).encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
-        return guess_hash[:4] == "0000", guess_hash
+        return guess_hash[:6] == "000000", guess_hash
 
     def add_block(self, block):
         """
@@ -235,10 +235,16 @@ class Blockchain:
         block['transactions'] = transactions
         block, current_hash = self.__new_block_for_modify(block)
         block_list.append(block)
+        temp=self.proof
+        if temp > 5000000:
+            return None
         for index in range(chain_index, len(self.chain)):
             block = self.chain[index]
             block['previous_hash'] = current_hash
             block, current_hash = self.__new_block_for_modify(block)
+            temp+=self.proof
+            if temp > 5000000:
+                return None
             block_list.append(block)
         modify_dict = {'index': chain_index,
                        'blocks': block_list}
