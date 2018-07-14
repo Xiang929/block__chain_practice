@@ -13,6 +13,12 @@ def search_goods():
         return render_template('searchGoods.html')
     return redirect(url_for('login'))
 
+@app.route('/showGoods')
+def show_goods():
+    if hasattr(g,'userid'):
+        print(g.userid)
+        return render_template('showGoods.html')
+    return redirect(url_for('login'))
 
 @app.route('/createGoods')
 def create_goods():
