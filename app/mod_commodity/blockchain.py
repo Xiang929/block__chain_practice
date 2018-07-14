@@ -7,15 +7,18 @@ from uuid import uuid4
 import requests
 from flask import Flask, jsonify, request
 
+MAX_COUNT = 5000000
+
 
 class Blockchain:
-    __slots__ = ('chain', '__transactions', 'nodes', 'proof')
+    __slots__ = ('chain', '__transactions', 'nodes', 'proof', '__modify_count')
 
     def __init__(self):
         self.chain = []
         self.__transactions = {}
         self.nodes = set()
         self.proof = 0
+        self.__modify_count = 0
 
     def register_node(self, address):
         """
@@ -130,7 +133,9 @@ class Blockchain:
         :param block： new block:
         """
 
-        current_hash = self.proof_of_work(block)
+        current_hash = self.proof_of_work(block, modify=True)
+        if current_hash is None:
+            return None, None
         block['time'] = time()
         block['proof'] = self.proof
         block['current_hash'] = current_hash
@@ -172,24 +177,36 @@ class Blockchain:
         # We must make sure that the Dictionary is Ordered, or we'll have inconsistent hashes
         return hashlib.sha256(block_string).hexdigest()
 
-    def proof_of_work(self, block):
+    def proof_of_work(self, block, modify=False):
         """
         Simple Proof of Work Algorithm:
          - Find a number p' such that hash(pp') contains leading 4 zeroes
          - Where p is the previous proof, and p' is the new proof
 
+        :param modify: the type of operation
         :param block: <dict> new Block
         :return: <int>
         """
         block_string = json.dumps(block, sort_keys=True).encode()
         self.proof = 0
-
-        while True:
-            _hash = self.hash(block_string)
-            flag, current_hash = self.valid_proof(self.proof, _hash)
-            self.proof += 1
-            if flag is True:
-                break
+        if modify is False:
+            while True:
+                _hash = self.hash(block_string)
+                flag, current_hash = self.valid_proof(self.proof, _hash)
+                self.proof += 1
+                if flag is True:
+                    break
+        else:
+            while True:
+                _hash = self.hash(block_string)
+                flag, current_hash = self.valid_proof(self.proof, _hash)
+                if self.proof % 1000000 == 0:
+                    self.__modify_count += self.proof
+                    if self.__modify_count > MAX_COUNT:
+                        return None
+                self.proof += 1
+                if flag is True:
+                    break
         return current_hash
 
     @staticmethod
@@ -203,7 +220,7 @@ class Blockchain:
 
         guess = '{0}{1}'.format(proof, _hash).encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
-        return guess_hash[:6] == "000000", guess_hash
+        return guess_hash[:4] == "0000", guess_hash
 
     def add_block(self, block):
         """
@@ -234,16 +251,15 @@ class Blockchain:
         del transactions['index']
         block['transactions'] = transactions
         block, current_hash = self.__new_block_for_modify(block)
-        block_list.append(block)
-        temp=self.proof
-        if temp > 5000000:
+        if block is None:
             return None
+        block_list.append(block)
+        self.__modify_count = self.proof
         for index in range(chain_index, len(self.chain)):
             block = self.chain[index]
             block['previous_hash'] = current_hash
             block, current_hash = self.__new_block_for_modify(block)
-            temp+=self.proof
-            if temp > 5000000:
+            if block is None:
                 return None
             block_list.append(block)
         modify_dict = {'index': chain_index,

@@ -3,6 +3,7 @@ from flask import render_template,request,g, redirect,url_for
 from app.mod_publisher.subscriber import Subscriber
 from config import *
 from app import mod_user
+from app import MysqlService
 
 subscriber = Subscriber(SERVER, PORT)
 
@@ -35,7 +36,10 @@ def modify_goods():
 @app.route('/userInfor')
 def userInfor():
     if hasattr(g, 'userid'):
-        return render_template('userInfor.html',userid='id',username='Jaye',userphone='11111',userrole='生产商')
+        mysql=MysqlService()
+        userIn=mysql.getUserInforByID(g.userid)
+        print(userIn)
+        return render_template('userInfor.html',userid=g.userid,username=userIn[0],userphone=userIn[1],userrole=userIn[2])
     return redirect(url_for('login'))
 
 

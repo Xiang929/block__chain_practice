@@ -35,14 +35,14 @@ def login():
     mysql = MysqlService()
     rea_pass = mysql.getPassById(id)
     if password == rea_pass:
-        return render_template('searchGoods.html')
+        return redirect(url_for('search_goods'))
     else:
         return render_template('fail.html')
 
 @app.route('/user/logout')
 def logout():
     session.pop('userid',None)
-    return render_template('login.html')
+    return redirect(url_for('login'))
 
 @app.route('/user/edit', methods=['GET', 'POST'])
 def editUser(password, newpass):
