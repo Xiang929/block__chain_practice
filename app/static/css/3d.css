@@ -48,6 +48,10 @@
   -webkit-animation: front 1s ease-in-out alternate infinite;
           animation: front 1s ease-in-out alternate infinite;
   background: #5287A5;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .back {

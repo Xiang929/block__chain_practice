@@ -27,4 +27,4 @@ if __name__ == '__main__':
     handle_task.setDaemon(True)
     handle_task.start()
 
-    app.run(host='127.0.0.1', port=port, use_reloader=False)
+    app.run(host='127.0.0.1', port=port, use_reloader=False,debug=True)
