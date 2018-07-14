@@ -82,9 +82,12 @@ def editGoods():
     dict = {'index':index ,'number': product_id, 'name': product_name, 'address': address, 'date': data, 'description': discription,
             'status': state}
     # block=Blockchain()
-    subscriber.send_message('modify block', dict)
+    #subscriber.send_message('modify block', dict)
+    result=subscriber.blockchain.modify_block(dict)
+    if result == None:
+        return render_template('modifyGoods.html', res='fail')
     # if res is not None:
     #     return render_template('createGoods.html', res='success')
     # else:
     #     return render_template('createGoods.html', res='fail')
-    return render_template('createGoods.html', res='success')
+    return render_template('modifyGoods.html', res='success')
