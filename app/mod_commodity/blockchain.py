@@ -220,7 +220,7 @@ class Blockchain:
 
         guess = '{0}{1}'.format(proof, _hash).encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
-        return guess_hash[:6] == "000000", guess_hash
+        return guess_hash[:4] == "0000", guess_hash
 
     def add_block(self, block):
         """

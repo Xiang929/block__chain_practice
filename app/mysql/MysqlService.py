@@ -11,7 +11,7 @@ class MysqlService:
         # "+phone+","+role+")"""
         sql = "INSERT INTO blockchain_tbl(id, pass, role, phone, name) \
                VALUES ('%s', '%s', '%s', '%s', '%s' )" % \
-              (id, password, name, phone, role)
+              (id, password, role, phone, name)
         try:
             self.cursor.execute(sql)
             self.db.commit()
@@ -42,5 +42,26 @@ class MysqlService:
         try:
             self.cursor.execute(sql)
             self.db.commit()
+        except:
+            self.db.rollback()
+
+    def getUserInforByID(self,id):
+        sql_name = "SELECT name from blockchain_tbl where id ='%s'" % (id)
+        sql_phone = "SELECT phone from blockchain_tbl where id ='%s'" % (id)
+        sql_role = "SELECT role from blockchain_tbl where id ='%s'" % (id)
+        try:
+            self.cursor.execute(sql_name)
+            results = self.cursor.fetchall()
+            for row in results:
+                name = row[0]
+            self.cursor.execute(sql_phone)
+            results = self.cursor.fetchall()
+            for row in results:
+                phone=row[0]
+            self.cursor.execute(sql_role)
+            results = self.cursor.fetchall()
+            for row in results:
+                role = row[0]
+            return [name,phone,role]
         except:
             self.db.rollback()
