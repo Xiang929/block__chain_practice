@@ -1,4 +1,4 @@
-from flask import request, render_template
+from flask import render_template,Flask, session, redirect, url_for, escape, request
 import json
 from app.mod_user.User import User
 from app.mysql.MysqlService import MysqlService
@@ -27,6 +27,8 @@ def login():
     if request.method == 'GET':
         return render_template('login.html')
     print(request.get_data())
+    session['userid']=request.form['username']
+    print('save userid in session ')
     id = request.form['username']
     password = request.form['password']
     # get the password from database
@@ -37,6 +39,10 @@ def login():
     else:
         return render_template('fail.html')
 
+@app.route('/user/logout')
+def logout():
+    session.pop('userid',None)
+    return render_template('login.html')
 
 @app.route('/user/edit', methods=['GET', 'POST'])
 def editUser(password, newpass):

@@ -1,26 +1,36 @@
 from app import app
-from flask import render_template,request
+from flask import render_template,request,g, redirect,url_for
 from app.mod_publisher.subscriber import Subscriber
 from config import *
+from app import mod_user
 
 subscriber = Subscriber(SERVER, PORT)
 
 @app.route('/searchGoods')
 def search_goods():
-    return render_template('searchGoods.html')
+    if hasattr(g,'userid'):
+        print(g.userid)
+        return render_template('searchGoods.html')
+    return redirect(url_for('login'))
 
 
 @app.route('/createGoods')
 def create_goods():
-    return render_template('createGoods.html')
+    if hasattr(g, 'userid'):
+        return render_template('createGoods.html')
+    return redirect(url_for('login'))
 
 @app.route('/modifyGoods')
 def modify_goods():
-    return render_template('modifyGoods.html')
+    if hasattr(g, 'userid'):
+        return render_template('modifyGoods.html')
+    return redirect(url_for('login'))
 
 @app.route('/userInfor')
 def userInfor():
-    return render_template('userInfor.html',userid='id',username='Jaye',userphone='11111',userrole='生产商')
+    if hasattr(g, 'userid'):
+        return render_template('userInfor.html',userid='id',username='Jaye',userphone='11111',userrole='生产商')
+    return redirect(url_for('login'))
 
 
 @app.route('/user/getGoods', methods=['GET', 'POST'])
