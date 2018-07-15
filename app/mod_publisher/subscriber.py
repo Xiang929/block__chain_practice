@@ -1,9 +1,8 @@
 import zmq
 import json
-import threading
 import multiprocessing
 from config import *
-
+from app.mod_goods import GoodsController
 from app.mod_commodity.blockchain import Blockchain
 
 
@@ -25,6 +24,8 @@ class Subscriber(object):
             [topic, body] = socket.recv_multipart()
             print(topic, body)
             if topic == b'new block':
+                self.flag = False
+                GoodsController.new_flag = False
                 transactions_string = bytes.decode(body)
                 transactions = json.loads(transactions_string)
                 task = multiprocessing.Process(target=self.send_result,
@@ -33,6 +34,7 @@ class Subscriber(object):
                 task.start()
             elif topic == b'create block':
                 self.flag = True
+                GoodsController.new_flag = True
                 task.terminate()
                 block_string = bytes.decode(body)
                 block_obj = json.loads(block_string)
