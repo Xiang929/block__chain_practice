@@ -47,7 +47,10 @@ def create_goods():
 @app.route('/modifyGoods')
 def modify_goods():
     if hasattr(g, 'userid'):
-        return render_template('modifyGoods.html')
+        mysql = MysqlService()
+        userIn = mysql.getUserInforByID(g.userid)
+        chainName = isCanAddGoods(g.role)
+        return render_template('modifyGoods.html',userrole=userIn[2],type='O',block=chainName)
     return redirect(url_for('login'))
 
 
@@ -127,7 +130,7 @@ def editGoods():
             'status': state}
     # block=Blockchain()
     # subscriber.send_message('modify block', dict)
-    result = subscriber.blockchain.modify_block(dict)
+    result = subscriber.block_chain.modify_block(dict)
     if result == None:
         return render_template('modifyGoods.html', res='fail')
     # if res is not None:

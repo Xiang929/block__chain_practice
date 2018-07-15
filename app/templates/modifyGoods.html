@@ -62,13 +62,17 @@
 				<div class="col-sm-6 col-sm-offset-3">
 					<form action="/user/editGoods" method="post">
 							<div class="form-group">
-								<label>Product ID</label> 
-								<input type="text" name="product_id" placeholder="" class="form-control" id="product_id" required />
-							</div>
-
-							<div class="form-group">
-								<label>Block index</label>
-								<input type="text" name="index" placeholder="" class="form-control" readonly="true" id="index" required />
+								<label>Product ID</label>
+								<select name="product_id" class="form-control" id="product_id">
+									{% if type=='M' %}
+										<option value ="{{block}}">{{block}}</option>
+									{% else %}
+										{% for b in block %}
+									<option value ="{{b}}">{{b}}</option>
+									{% endfor %}
+									{% endif %}
+                        		</select>
+								<!--<input autocomplete="off" type="" name="product_id" value="{{productid}}" readonly="true" class="form-control" id="product_id" required />-->
 							</div>
 
 							<div class="form-group">
@@ -77,9 +81,8 @@
 							</div>
 						
 							<div class="form-group">
-								<label>Pruduct Description</label> 
-								<textarea name="product_des" rows="3" placeholder="Please enter the description" cols="40" id="product_des" class="form-control">
-									</textarea>
+								<label>Pruduct Description</label>
+								<input autocomplete="off" type="text" name="product_des" placeholder="" class="form-control" id="product_des" required />
 							</div>
 						
 							<div class="form-group">
@@ -89,12 +92,12 @@
 						
 							<div class="form-group">
 								<label>Date</label> 
-								<input type="text" name="date" placeholder="" class="form-control" id="date" required />
+								<input autocomplete="off" type="date" name="date" placeholder="" class="form-control" id="date" required />
 							</div>
 						
 							<div class="form-group">
 								<label>Status</label> 
-								<input type="text" name="status" placeholder="" class="form-control" id="status" required />
+								<input type="text" name="status" placeholder="" value="{{userrole}}" readonly="true" class="form-control" id="status" required />
 							</div>
 						<button type="submit" class="btn btn-primary btn-lg">Modify</button>
 					</form>
