@@ -44,21 +44,27 @@ class Blockchain:
 
         last_block = chain[0]
         current_index = 1
-
+        global last_block_hash
         while current_index < len(chain):
             block = chain[current_index]
             print(last_block)
             print(block)
             print("\n-----------\n")
             # Check that the hash of the block is correct
-            last_block_hash = self.hash(last_block)
+            last_block_hash = last_block['current_hash']
             if block['previous_hash'] != last_block_hash:
                 return False
 
             # Check that the Proof of Work is correct
-            if not self.valid_proof(block['proof'], last_block_hash):
+            block = {
+                'previous_hash': last_block['previous_hash'],
+                'index': last_block['index'],
+                'timestamp': last_block['timestamp'],
+                'transactions': last_block['transactions'],
+                'proof': self.proof
+            }
+            if not self.valid_proof(last_block['proof'], last_block_hash):
                 return False
-
             last_block = block
             current_index += 1
 
@@ -149,12 +155,12 @@ class Blockchain:
         :return True is successful, False is failed
         """
 
-        required = ['number', 'name', 'address', 'date', 'description', 'status']
+        required = ['product_id', 'name', 'address', 'date', 'description', 'status']
         if not all(value in values for value in required):
             return False
         else:
             self.__transactions = {
-                'number': values['number'],
+                'product_id': values['product_id'],
                 'name': values['name'],
                 'address': values['address'],
                 'date': values['date'],
@@ -265,6 +271,16 @@ class Blockchain:
         modify_dict = {'index': chain_index,
                        'blocks': block_list}
         return modify_dict
+
+    def get_role(self, product_id):
+        global target_index
+        for index in range(0, len(self.chain)):
+            if product_id == self.chain[index].get('product_id'):
+                target_index = index
+                continue
+            else:
+                continue
+        return self.chain[target_index].get('status')
 
 
 # Instantiate the Node
