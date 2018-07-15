@@ -93,7 +93,7 @@ def addGoods():
     discription = request.form['product_des']
     state = request.form['status']
     # add the goods to the blockchain
-    dict = {'number': product_id, 'name': product_name, 'address': address, 'date': data, 'description': discription,
+    dict = {'product_id': product_id, 'name': product_name, 'address': address, 'date': data, 'description': discription,
             'status': state}
     # block=Blockchain()
     mysql = MysqlService()
@@ -101,8 +101,6 @@ def addGoods():
     subscriber.send_message('new block', dict)
     while new_flag is False:
         pass
-
-
     # if res is not None:
     #     return render_template('createGoods.html', res='success')
     # else:
@@ -137,9 +135,6 @@ def editGoods():
     # else:
     #     return render_template('createGoods.html', res='fail')
     return render_template('modifyGoods.html', res='success')
-
-
-
 
 
 
