@@ -63,11 +63,11 @@
 						<thead>
 						<tr>
 							<th>#</th>
-							<th>Address</th>
-							<th>Date</th>
+							<th>Number</th>
 							<th>Name</th>
 							<th>Description</th>
-							<th>Number</th>
+							<th>Address</th>
+							<th>Date</th>
 							<th>Status</th>
 						</tr>
 						</thead>
@@ -137,11 +137,11 @@
 		const rows = json.chain.map(block => `
 			<tr>
 				<th scope="row">${block.index}</th>
-				<td>${block.transactions.address}</td>
-				<td>${block.transactions.date}</td>
+				<td>${block.transactions.number}</td>
 				<td>${block.transactions.name}</td>
 				<td>${block.transactions.description}</td>
-				<td>${block.transactions.number}</td>
+				<td>${block.transactions.address}</td>
+				<td>${block.transactions.date}</td>
 				<td>${block.transactions.status}</td>
 			</tr>
 		`).join('');

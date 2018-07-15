@@ -1,4 +1,4 @@
-from flask import render_template,Flask, session, redirect, url_for, escape, request
+from flask import render_template,Flask, session, redirect, url_for, escape, request,g
 import json
 from app.mod_user.User import User
 from app.mysql.MysqlService import MysqlService
@@ -34,6 +34,8 @@ def login():
     # get the password from database
     mysql = MysqlService()
     rea_pass = mysql.getPassById(id)
+    print(id)
+    print(rea_pass)
     if password == rea_pass:
         return redirect(url_for('search_goods'))
     else:
@@ -45,16 +47,15 @@ def logout():
     return redirect(url_for('login'))
 
 @app.route('/user/edit', methods=['GET', 'POST'])
-def editUser(password, newpass):
-    id = request.form['username']
-    password = request.form['password']
-    newpass = request.form['newpass']
+def editUser():
+    id = request.form['userid']
+    username = request.form['username']
+    userphone = request.form['userphone']
     mysql = MysqlService()
-    rea_pass = mysql.getPassById(id)
-    if rea_pass == password:
-        mysql.UpdateMessage(id, newpass)
-    else:
-        return 'error'
+    mysql.UpdateMessage(username,userphone, id)
+    if hasattr(g, 'userid'):
+        return redirect(url_for('userInfor'))
+
 
 
 
