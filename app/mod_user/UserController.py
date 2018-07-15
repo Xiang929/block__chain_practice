@@ -30,10 +30,10 @@ def login():
     if request.method == 'GET':
         return render_template('login.html')
     print(request.get_data())
-    session['userid']=request.form['username']
     mysql = MysqlService()
-    [name,phone,role]=mysql.getUserInforByID(request.form['username'])
-    session['role']=role
+    useInfor=mysql.getUserInforByID(request.form['username'])
+    if useInfor==None:
+        return render_template('login.html', res='failID')
     id = request.form['username']
     password = request.form['password']
     # get the password from database
@@ -42,9 +42,11 @@ def login():
     print(id)
     print(rea_pass)
     if password == rea_pass:
+        session['userid'] = request.form['username']
+        session['role'] = useInfor[2]
         return redirect(url_for('search_goods'))
     else:
-        return render_template('login.html', res='fail')
+        return render_template('login.html', res='failPass')
 
 @app.route('/user/logout')
 def logout():

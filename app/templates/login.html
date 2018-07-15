@@ -227,9 +227,13 @@
 
     <script language="JavaScript">
 			var res='{{res}}';
-			if(res=='fail'){
+			if(res=='failID'){
 				toastr.options.positionClass='toast-top-full-width';
-			    toastr.error("用户名或密码错误");
+			    toastr.error("用户名不存在");
+			}
+			if(res=='failPass'){
+			    toastr.options.positionClass='toast-top-full-width';
+			    toastr.error("密码错误");
 			}
 	</script>
 </body>
