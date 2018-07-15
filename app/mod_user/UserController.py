@@ -28,7 +28,9 @@ def login():
         return render_template('login.html')
     print(request.get_data())
     session['userid']=request.form['username']
-    print('save userid in session ')
+    mysql = MysqlService()
+    [name,phone,role]=mysql.getUserInforByID(request.form['username'])
+    session['role']=role
     id = request.form['username']
     password = request.form['password']
     # get the password from database

@@ -27,7 +27,7 @@ def show_goods():
 @app.route('/createGoods')
 def create_goods():
     if hasattr(g, 'userid'):
-        return render_template('createGoods.html')
+        return render_template('createGoods.html',role=g.role)
     return redirect(url_for('login'))
 
 
