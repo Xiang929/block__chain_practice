@@ -30,12 +30,13 @@ def create_goods():
     if hasattr(g, 'userid'):
         print(g.role)
         print(len(subscriber.block_chain.chain))
-        if g.role=='Meteria':
-            productID=generateUUID()
-            return render_template('createGoods.html',type='M',block=productID,role=g.role)
+        if g.role == 'Meteria':
+            productID = generateUUID()
+            return render_template('createGoods.html', type='M', block=productID, role=g.role)
         else:
-            chainName=isCanAddGoods(g.role)
-            return render_template('createGoods.html',type='O',block=chainName,role=g.role)
+            chainName = isCanAddGoods(g.role)
+            return render_template('createGoods.html', type='O', block=chainName, role=g.role)
+
 
         # if (len(subscriber.block_chain.chain)==0 and g.role=="Meteria") or (len(subscriber.block_chain.chain) == 1 and g.role == "Product") or (len(subscriber.block_chain.chain) == 2 and g.role == "Transport") or (len(subscriber.block_chain.chain) == 3 and g.role == "Sale"):
         #     return render_template('createGoods.html',role=g.role, disabled="false")
@@ -49,8 +50,9 @@ def modify_goods():
     if hasattr(g, 'userid'):
         mysql = MysqlService()
         userIn = mysql.getUserInforByID(g.userid)
-        chainName = isCanAddGoods(g.role)
-        return render_template('modifyGoods.html',userrole=userIn[2],type='O',block=chainName)
+
+        chainName=isCanEditGoods(g.role)
+        return render_template('modifyGoods.html',type='M',block=chainName,userrole=g.role)
     return redirect(url_for('login'))
 
 
@@ -123,21 +125,21 @@ def editGoods():
     data = request.form['date']
     discription = request.form['product_des']
     state = request.form['status']
-    index = 2
-    # add the goods to the blockchain
-    dict = {'index': index, 'number': product_id, 'name': product_name, 'address': address, 'date': data,
-            'description': discription,
-            'status': state}
-    # block=Blockchain()
-    # subscriber.send_message('modify block', dict)
-    result = subscriber.block_chain.modify_block(dict)
-    if result == None:
-        return render_template('modifyGoods.html', res='fail')
+    # index = 2
+    # # add the goods to the blockchain
+    # dict = {'index': index, 'number': product_id, 'name': product_name, 'address': address, 'date': data,
+    #         'description': discription,
+    #         'status': state}
+    # # block=Blockchain()
+    # # subscriber.send_message('modify block', dict)
+    # result = subscriber.block_chain.modify_block(dict)
+    # if result == None:
+    return render_template('modifyGoods.html', res='fail')
     # if res is not None:
     #     return render_template('createGoods.html', res='success')
     # else:
     #     return render_template('createGoods.html', res='fail')
-    return render_template('modifyGoods.html', res='success')
+    #return render_template('modifyGoods.html', res='success')
 
 
 
@@ -147,16 +149,18 @@ def isCanAddGoods(currentRole):
 
     currentNum=changeRoleToNum(currentRole)
 
-    if (currentNum==2 or currentNum==4):
-        canAddChainID=mysql.getCanAddChainID(currentNum-1)
-        print(canAddChainID)
-        return canAddChainID
+    canAddChainID=mysql.getCanAddChainID(currentNum-1)
+    print(canAddChainID)
+    return canAddChainID
 
-    if currentNum==3:
-        canAddChainID = mysql.getCanAddChainID(currentNum - 1)
-        print(canAddChainID)
-        return canAddChainID
+def isCanEditGoods(currentRole):
+    mysql=MysqlService()
 
+    currentNum=changeRoleToNum(currentRole)
+
+    canAddChainID=mysql.getCanAddChainID(currentNum)
+    print(canAddChainID)
+    return canAddChainID
 
 def changeRoleToNum(role):
     if role=='Meteria':

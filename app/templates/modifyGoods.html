@@ -27,6 +27,10 @@
 		<title>北交大区块链商品溯源系统</title>
 		<meta name="description" content="About the team behind Chipper, the tool that helps students stay organized and better manage their time." />
 		<meta name="keywords" content="Chipper,study planner,homework planner,organizer,student,college,time management,study calendar" />
+
+		<link href="/static/css/toastr.css" rel="stylesheet" />
+<script src="/static/vendor/jquery/jquery-3.2.1.min.js"></script>
+<script src="/static/js/toastr.js"></script>
 	</head>
 	<body>
 
@@ -64,13 +68,9 @@
 							<div class="form-group">
 								<label>Product ID</label>
 								<select name="product_id" class="form-control" id="product_id">
-									{% if type=='M' %}
-										<option value ="{{block}}">{{block}}</option>
-									{% else %}
 										{% for b in block %}
-									<option value ="{{b}}">{{b}}</option>
-									{% endfor %}
-									{% endif %}
+											<option value ="{{b}}">{{b}}</option>
+										{% endfor %}
                         		</select>
 								<!--<input autocomplete="off" type="" name="product_id" value="{{productid}}" readonly="true" class="form-control" id="product_id" required />-->
 							</div>
@@ -105,14 +105,6 @@
 			</div>
 		</section>
 		
-		<script language="JavaScript">
-			var res='{{res}}';
-			if(res=='success')
-				alert('edit block success')
-			else if(res=='fail')
-			    alert('edit block fail')
-		</script>
-		
 		<footer class="container-fluid footer">
 			<div class="row">
 				<div class="col-sm-3 col-sm-offset-2">
@@ -143,14 +135,14 @@
 		</footer>
 
 		
-<script>
-  !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t){var e=document.createElement("script");e.type="text/javascript";e.async=!0;e.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)};analytics.SNIPPET_VERSION="4.0.0";
-  
-  analytics.load("PoOi7kmm4SuDrmCQsEInb2trH8hAlkmD");
-  
-  analytics.page();
-  }}();
-</script>
+		<script>
+		  !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t){var e=document.createElement("script");e.type="text/javascript";e.async=!0;e.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)};analytics.SNIPPET_VERSION="4.0.0";
+
+		  analytics.load("PoOi7kmm4SuDrmCQsEInb2trH8hAlkmD");
+
+		  analytics.page();
+		  }}();
+		</script>
 
 
 		<script>
@@ -159,6 +151,16 @@
 				analytics.page("About Page");
 			});
 		</script>
+
+		<script src="/static/js/main.js"></script>
+
+    <script language="JavaScript">
+			var res='{{res}}';
+			if(res=='fail'){
+				toastr.options.positionClass='toast-top-full-width';
+			    toastr.error("商品修改失败");
+			}
+	</script>
 
 	</body>
 </html>

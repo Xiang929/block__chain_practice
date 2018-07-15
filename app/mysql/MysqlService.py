@@ -98,6 +98,7 @@ class MysqlService:
 
         # sql_chain = "SELECT role='%s', group_concat(chain separator ' ') from blockchain_tbl group by role" % (RoleName)
         sql_chain="SELECT chain from blockchain_tbl where role ='%s'" % (RoleName)
+        print(sql_chain)
         self.cursor.execute(sql_chain)
         results = self.cursor.fetchall()
 
