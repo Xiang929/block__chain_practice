@@ -85,7 +85,7 @@ def addGoods():
     discription = request.form['product_des']
     state = request.form['status']
     # add the goods to the blockchain
-    dict = {'number': product_id, 'name': product_name, 'address': address, 'date': data, 'description': discription,
+    dict = {'product_id': product_id, 'name': product_name, 'address': address, 'date': data, 'description': discription,
             'status': state}
     # block=Blockchain()
     subscriber.send_message('new block', dict)
