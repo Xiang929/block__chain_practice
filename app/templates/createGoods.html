@@ -24,6 +24,10 @@
 <script src="/static/Chipoer/maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="https://getchipper.com/static/js/main.js"></script>
 
+<link href="/static/css/toastr.css" rel="stylesheet" />
+<script src="/static/vendor/jquery/jquery-3.2.1.min.js"></script>
+<script src="/static/js/toastr.js"></script>
+
 		<title>北交大区块链商品溯源系统</title>
 		<meta name="description" content="Get information for Chipper, the tool that helps students stay organized and better manage their time." />
 		<meta name="keywords" content="Chipper,study planner,homework planner,organizer,student,college,time management,study calendar" />
@@ -97,12 +101,34 @@
 			</div>
 		</section>
 
+
 		<script language="JavaScript">
 			var res='{{res}}';
-			if(res=='success')
-				alert('create success')
-			else if(res=='fail')
-			    alert('create fail')
+			if(res=='success'){
+				toastr.options = {
+				  "closeButton": true,
+				  "debug": false,
+				  "newestOnTop": false,
+				  "progressBar": false,
+				  "positionClass": "toast-top-full-width",
+				  "preventDuplicates": false,
+				  "onclick": null,
+				  "showDuration": "300",
+				  "hideDuration": "1000",
+				  "timeOut": 0,
+				  "extendedTimeOut": 0,
+				  "showEasing": "swing",
+				  "hideEasing": "linear",
+				  "showMethod": "fadeIn",
+				  "hideMethod": "fadeOut",
+				  "tapToDismiss": false
+				}
+				toastr.success("成功创建区块");
+			}
+
+
+			<!--else if(res=='fail')-->
+			    <!--alert('create fail')-->
 		</script>
 
 		<footer class="container-fluid footer">
