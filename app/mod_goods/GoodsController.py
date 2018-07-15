@@ -3,6 +3,7 @@ from flask import render_template, request, g, redirect, url_for
 from app.mod_publisher.subscriber import Subscriber
 from config import *
 from app import MysqlService
+import uuid
 
 subscriber = Subscriber(SERVER, PORT)
 new_flag = False
@@ -29,10 +30,17 @@ def create_goods():
     if hasattr(g, 'userid'):
         print(g.role)
         print(len(subscriber.block_chain.chain))
-        if (len(subscriber.block_chain.chain)==0 and g.role=="Meteria") or (len(subscriber.block_chain.chain) == 1 and g.role == "Product") or (len(subscriber.block_chain.chain) == 2 and g.role == "Transport") or (len(subscriber.block_chain.chain) == 3 and g.role == "Sale"):
-            return render_template('createGoods.html',role=g.role, disabled="false")
+        if g.role=='Meteria':
+            productID=generateUUID()
+            return render_template('createGoods.html',type='M',block=productID,role=g.role)
         else:
-            return render_template('createGoods.html', role=g.role, disabled="true")
+            chainName=isCanAddGoods(g.role)
+            return render_template('createGoods.html',type='O',block=chainName,role=g.role)
+
+        # if (len(subscriber.block_chain.chain)==0 and g.role=="Meteria") or (len(subscriber.block_chain.chain) == 1 and g.role == "Product") or (len(subscriber.block_chain.chain) == 2 and g.role == "Transport") or (len(subscriber.block_chain.chain) == 3 and g.role == "Sale"):
+        #     return render_template('createGoods.html',role=g.role, disabled="false")
+        # else:
+        #     return render_template('createGoods.html', role=g.role, disabled="true")
     return redirect(url_for('login'))
 
 
@@ -85,12 +93,16 @@ def addGoods():
     discription = request.form['product_des']
     state = request.form['status']
     # add the goods to the blockchain
-    dict = {'product_id': product_id, 'name': product_name, 'address': address, 'date': data, 'description': discription,
+    dict = {'number': product_id, 'name': product_name, 'address': address, 'date': data, 'description': discription,
             'status': state}
     # block=Blockchain()
+    mysql = MysqlService()
+    mysql.addChainIdToUser(g.userid, product_id)
     subscriber.send_message('new block', dict)
     while new_flag is False:
         pass
+
+
     # if res is not None:
     #     return render_template('createGoods.html', res='success')
     # else:
@@ -125,3 +137,42 @@ def editGoods():
     # else:
     #     return render_template('createGoods.html', res='fail')
     return render_template('modifyGoods.html', res='success')
+
+
+
+
+
+
+
+def isCanAddGoods(currentRole):
+    mysql=MysqlService()
+
+    currentNum=changeRoleToNum(currentRole)
+
+    if (currentNum==2 or currentNum==4):
+        canAddChainID=mysql.getCanAddChainID(currentNum-1)
+        print(canAddChainID)
+        return canAddChainID
+
+    if currentNum==3:
+        canAddChainID = mysql.getCanAddChainID(currentNum - 1)
+        print(canAddChainID)
+        return canAddChainID
+
+
+def changeRoleToNum(role):
+    if role=='Meteria':
+        return 1
+    if role=='Product':
+        return 2
+    if role=='Transport':
+        return 3
+    if role=='Sale':
+        return 4
+
+def generateUUID():
+    productid_uu=uuid.uuid1()
+    productid_uu_str=str(productid_uu)
+    productid=productid_uu_str[0:8]
+    print('Generate the product id: '+productid)
+    return productid
