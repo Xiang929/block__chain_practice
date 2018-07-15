@@ -18,6 +18,9 @@ def register():
     user = User(id, password, name, phone, role)
     # add this  user to database
     mysql = MysqlService()
+    userInfor=mysql.getUserInforByID(id)
+    if userInfor!=None:
+        return render_template('register.html', res='fail')
     mysql.addUser(id, password, name, phone, role)
     return render_template('login.html')
 
@@ -37,7 +40,7 @@ def login():
     if password == rea_pass:
         return redirect(url_for('search_goods'))
     else:
-        return render_template('fail.html')
+        return render_template('login.html', res='fail')
 
 @app.route('/user/logout')
 def logout():

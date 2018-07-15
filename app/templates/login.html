@@ -21,6 +21,11 @@
 	<link rel="stylesheet" type="text/css" href="/static/css/main.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/3d.css">
 <!--===============================================================================================-->
+
+<link href="/static/css/toastr.css" rel="stylesheet" />
+<script src="/static/vendor/jquery/jquery-3.2.1.min.js"></script>
+<script src="/static/js/toastr.js"></script>
+
 </head>
 <body>
 
@@ -220,5 +225,12 @@
 <!--===============================================================================================-->
 	<script src="/static/js/main.js"></script>
 
+    <script language="JavaScript">
+			var res='{{res}}';
+			if(res=='fail'){
+				toastr.options.positionClass='toast-top-full-width';
+			    toastr.error("用户名或密码错误");
+			}
+	</script>
 </body>
 </html>

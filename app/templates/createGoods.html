@@ -125,10 +125,10 @@
 				}
 				toastr.success("成功创建区块");
 			}
-
-
-			<!--else if(res=='fail')-->
-			    <!--alert('create fail')-->
+			else if(res=='fail'){
+				toastr.options.positionClass='toast-top-full-width';
+			    toastr.error("创建区块失败区块");
+			}
 		</script>
 
 		<footer class="container-fluid footer">
