@@ -121,9 +121,9 @@
 			const id = location.href.substr(eq + 1);
 			const table = document.getElementById('blocks')
 			let data = fetch('http://127.0.0.1:5000/user/getGoods').then(response => response.json()).then(json => {
-				const rows = json.chain.filter(block => block.transactions.number == id).map(block => `
+				const rows = json.chain.filter(block => block.transactions.product_id == id).map(block => `
 					<tr>
-						<th scope="row">${block.transactions.number}</th>
+						<th scope="row">${block.transactions.product_id}</th>
 						<td>${block.transactions.name}</td>
 						<td>${block.transactions.date}</td>
 						<td>${block.transactions.address}</td>
@@ -132,8 +132,8 @@
 					</tr>
 				`).join('');
 				table.innerHTML = rows;
-				$('#qrcode').qrcode(json.chain.filter(block => block.transactions.number == id).map(block => `\
-ID: ${block.transactions.number}
+				$('#qrcode').qrcode(json.chain.filter(block => block.transactions.product_id == id).map(block => `\
+ID: ${block.transactions.product_id}
 Name: ${block.transactions.name}
 Date: ${block.transactions.date}
 Addr: ${block.transactions.address}
@@ -148,7 +148,7 @@ Stat: ${block.transactions.status}
 			let data = fetch('http://127.0.0.1:5000/user/getGoods').then(response => response.json()).then(json => {
 				const rows = json.chain.map(block => `
 					<tr>
-						<th scope="row">${block.transactions.number}</th>
+						<th scope="row">${block.transactions.product_id}</th>
 						<td>${block.transactions.name}</td>
 						<td>${block.transactions.date}</td>
 						<td>${block.transactions.address}</td>
