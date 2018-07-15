@@ -27,7 +27,12 @@ def show_goods():
 @app.route('/createGoods')
 def create_goods():
     if hasattr(g, 'userid'):
-        return render_template('createGoods.html',role=g.role)
+        print(g.role)
+        print(len(subscriber.block_chain.chain))
+        if (len(subscriber.block_chain.chain)==0 and g.role=="Meteria") or (len(subscriber.block_chain.chain) == 1 and g.role == "Product") or (len(subscriber.block_chain.chain) == 2 and g.role == "Transport") or (len(subscriber.block_chain.chain) == 3 and g.role == "Sale"):
+            return render_template('createGoods.html',role=g.role, disabled="false")
+        else:
+            return render_template('createGoods.html', role=g.role, disabled="true")
     return redirect(url_for('login'))
 
 
