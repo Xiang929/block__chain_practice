@@ -63,11 +63,10 @@
 						<thead>
 						<tr>
 							<th>#</th>
-							<th>Address</th>
-							<th>Date</th>
 							<th>Name</th>
 							<th>Description</th>
-							<th>Number</th>
+							<th>Address</th>
+							<th>Date</th>
 							<th>Status</th>
 						</tr>
 						</thead>
@@ -111,19 +110,41 @@
 </html>
 
 <script>
-	const table = document.getElementById('blocks')
-	let data = fetch('http://127.0.0.1:5000/user/getGoods').then(response => response.json()).then(json => {
-		const rows = json.chain.map(block => `
-			<tr>
-				<th scope="row">${block.index}</th>
-				<td>${block.transactions.address}</td>
-				<td>${block.transactions.date}</td>
-				<td>${block.transactions.name}</td>
-				<td>${block.transactions.description}</td>
-				<td>${block.transactions.number}</td>
-				<td>${block.transactions.status}</td>
-			</tr>
-		`).join('');
-		table.innerHTML = rows;
-	});
+	// tryparse
+	(function() {
+		const eq = location.href.lastIndexOf('=');
+		if(eq !== -1){
+			console.log(eq, 'success')
+			const id = location.href.substr(eq + 1);
+			const table = document.getElementById('blocks')
+			let data = fetch('http://127.0.0.1:5000/user/getGoods').then(response => response.json()).then(json => {
+				const rows = json.chain.filter(block => block.transactions.number == id).map(block => `
+					<tr>
+						<th scope="row">${block.transactions.number}</th>
+						<td>${block.transactions.name}</td>
+						<td>${block.transactions.date}</td>
+						<td>${block.transactions.address}</td>
+						<td>${block.transactions.description}</td>
+						<td>${block.transactions.status}</td>
+					</tr>
+				`).join('');
+				table.innerHTML = rows;
+			});
+			return;
+		}
+			const table = document.getElementById('blocks')
+			let data = fetch('http://127.0.0.1:5000/user/getGoods').then(response => response.json()).then(json => {
+				const rows = json.chain.map(block => `
+					<tr>
+						<th scope="row">${block.transactions.number}</th>
+						<td>${block.transactions.name}</td>
+						<td>${block.transactions.date}</td>
+						<td>${block.transactions.address}</td>
+						<td>${block.transactions.description}</td>
+						<td>${block.transactions.status}</td>
+					</tr>
+				`).join('');
+				table.innerHTML = rows;
+			});
+	})(); //IIFE
 </script>

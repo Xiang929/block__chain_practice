@@ -37,8 +37,8 @@ class MysqlService:
         except:
             self.db.rollback()
 
-    def UpdateMessage(self, id, password):
-        sql = "UPDATE blockchain_tbl SET id='%s' where pass='%s'" % (id, password)
+    def UpdateMessage(self, name, phone,id):
+        sql = "UPDATE blockchain_tbl SET name='%s',phone='%s' where id='%s'" % (name, phone,id)
         try:
             self.cursor.execute(sql)
             self.db.commit()
