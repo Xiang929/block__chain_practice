@@ -111,6 +111,27 @@
 </html>
 
 <script>
+	// tryparse
+	const eq = location.href.lastIndexOf('=');
+	if(eq !== -1){
+		const id = location.href.substr(eq + 1);
+		const table = document.getElementById('blocks')
+		let data = fetch('http://127.0.0.1:5000/user/getGoods').then(response => response.json()).then(json => {
+			const rows = json.chain.filter(block => block.transactions.id === id).map(block => `
+				<tr>
+					<th scope="row">${block.index}</th>
+					<td>${block.transactions.address}</td>
+					<td>${block.transactions.date}</td>
+					<td>${block.transactions.name}</td>
+					<td>${block.transactions.description}</td>
+					<td>${block.transactions.number}</td>
+					<td>${block.transactions.status}</td>
+				</tr>
+			`).join('');
+			table.innerHTML = rows;
+		});
+	}
+
 	const table = document.getElementById('blocks')
 	let data = fetch('http://127.0.0.1:5000/user/getGoods').then(response => response.json()).then(json => {
 		const rows = json.chain.map(block => `
