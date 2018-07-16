@@ -200,6 +200,7 @@ class Blockchain:
                 _hash = self.hash(block_string)
                 new_block_flag, current_hash = self.valid_proof(self.proof, _hash)
                 self.proof += 1
+                print(self.proof)
                 if new_block_flag:
                     break
         else:
@@ -211,6 +212,7 @@ class Blockchain:
                     if self.__modify_count > MAX_COUNT:
                         return None
                 self.proof += 1
+                print(self.proof)
                 if modify_block_flag is True:
                     break
         return current_hash
