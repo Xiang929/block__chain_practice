@@ -30,7 +30,6 @@ class Subscriber(object):
                 transactions = json.loads(transactions_string)
                 task = multiprocessing.Process(target=self.send_result,
                                                args=('new block finished', transactions,))
-                # self.send_result('new block finished', transactions)
                 task.start()
             elif topic == b'create block':
                 self.flag = True
@@ -54,9 +53,9 @@ class Subscriber(object):
                     self.block_chain.chain[index - 1] = block_list[i]
                     i += 1
 
-    @staticmethod
-    def send_message(message, values):
+    def send_message(self, message, values=None, synchronization=False):
         """
+        :param synchronization: type of operation
         :param message: message to send
         :param values: product information
         :type message: str
@@ -69,9 +68,13 @@ class Subscriber(object):
         values_string = json.dumps(values)
         values_bytes = str.encode(values_string, encoding='utf-8')
         socket.send_multipart([message_bytes, values_bytes])
-        # self.start()
-        ret = socket.recv()
-        print(ret)
+        if synchronization is True:
+            self.block_chain.chain = socket.recv_pyobj()
+            if len(self.block_chain.chain) > 0:
+                print('Synchronization information succeeded')
+        else:
+            ret = socket.recv()
+            print(ret)
 
     def send_result(self, message, transactions):
         """
@@ -81,3 +84,6 @@ class Subscriber(object):
         new_block = self.block_chain.new_block(transactions)
         if self.flag is False:
             self.send_message(message, new_block)
+
+    def synchronizing(self):
+        self.send_message('synchronizing information', synchronization=True)

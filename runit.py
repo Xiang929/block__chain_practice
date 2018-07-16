@@ -26,5 +26,6 @@ if __name__ == '__main__':
     handle_task = threading.Thread(target=task)
     handle_task.setDaemon(True)
     handle_task.start()
+    subscriber.synchronizing()
 
-    app.run(host='127.0.0.1', port=port, use_reloader=False,debug=True)
+    app.run(host='127.0.0.1', port=port, use_reloader=False, debug=True)

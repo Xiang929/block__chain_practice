@@ -76,7 +76,6 @@ class MysqlService:
             chain_name=preChainName+' '+uuid
         else:
             chain_name=uuid
-        print(chain_name)
         sql_name = "UPDATE blockchain_tbl SET chain='%s' where id='%s'" % (chain_name, id)
         try:
             self.cursor.execute(sql_name)

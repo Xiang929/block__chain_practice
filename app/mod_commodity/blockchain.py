@@ -4,8 +4,7 @@ from time import time
 from urllib.parse import urlparse
 from uuid import uuid4
 
-import requests
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify
 
 MAX_COUNT = 50000
 
@@ -35,73 +34,39 @@ class Blockchain:
         else:
             raise ValueError('Invalid URL')
 
-    def valid_chain(self, chain):
+    def valid_chain(self):
         """
         Determine if a given blockchain is valid
-        :param chain: A blockchain
         :return: True if valid, False if not
         """
+        if len(self.chain) > 1:
+            last_block = self.chain[0]
+            current_index = 1
+            global last_block_hash
+            while current_index < len(self.chain):
+                block = self.chain[current_index]
+                # Check that the hash of the block is correct
+                last_block_hash = last_block['current_hash']
+                if block['previous_hash'] != last_block_hash:
+                    return False
 
-        last_block = chain[0]
-        current_index = 1
-        global last_block_hash
-        while current_index < len(chain):
-            block = chain[current_index]
-            print(last_block)
-            print(block)
-            print("\n-----------\n")
-            # Check that the hash of the block is correct
-            last_block_hash = last_block['current_hash']
-            if block['previous_hash'] != last_block_hash:
-                return False
+                # Check that the Proof of Work is correct
+                valid_block = {
+                    'previous_hash': last_block['previous_hash'],
+                    'index': last_block['index'],
+                    'timestamp': last_block['timestamp'],
+                    'transactions': last_block['transactions'],
+                    'proof': 0
+                }
 
-            # Check that the Proof of Work is correct
-            block = {
-                'previous_hash': last_block['previous_hash'],
-                'index': last_block['index'],
-                'timestamp': last_block['timestamp'],
-                'transactions': last_block['transactions'],
-                'proof': self.proof
-            }
-            if not self.valid_proof(last_block['proof'], last_block_hash):
-                return False
-            last_block = block
-            current_index += 1
-
+                valid_block_string = json.dumps(valid_block).encode()
+                valid_block_hash = self.hash(valid_block_string)
+                if self.valid_proof(last_block['proof'], valid_block_hash)[0] is False:
+                    return False
+                last_block = block
+                current_index += 1
+        print("valid chain")
         return True
-
-    def resolve_conflicts(self):
-        """
-        This is our consensus algorithm, it resolves conflicts
-        by replacing our chain with the longest one in the network.
-        :return: True if our chain was replaced, False if not
-        """
-
-        neighbours = self.nodes
-        new_chain = None
-
-        # We're only looking for chains longer than ours
-        max_length = len(self.chain)
-
-        # Grab and verify the chains from all the nodes in our network
-        for node in neighbours:
-
-            response = requests.get('http://{node}/chain'.format(node=node))
-            if response.status_code == 200:
-                length = response.json()['length']
-                chain = response.json()['chain']
-
-                # Check if the length is longer and the chain is valid
-                if length > max_length and self.valid_chain(chain):
-                    max_length = length
-                    new_chain = chain
-
-        # Replace our chain if we discovered a new, valid chain longer than ours
-        if new_chain:
-            self.chain = new_chain
-            return True
-
-        return False
 
     def new_block(self, values):
         """
@@ -124,7 +89,7 @@ class Blockchain:
                 'index': index,
                 'timestamp': time(),
                 'transactions': self.__transactions,
-                'proof': self.proof
+                'proof': 0
             }
             current_hash = self.proof_of_work(block)
 
@@ -193,28 +158,29 @@ class Blockchain:
         :param block: <dict> new Block
         :return: <int>
         """
-        block_string = json.dumps(block, sort_keys=True).encode()
+        block_string = json.dumps(block).encode()
+        _hash = self.hash(block_string)
         self.proof = 0
+        print(block_string)
         if modify is False:
             while True:
-                _hash = self.hash(block_string)
                 new_block_flag, current_hash = self.valid_proof(self.proof, _hash)
-                self.proof += 1
                 print(self.proof)
                 if new_block_flag:
                     break
+                self.proof += 1
         else:
             while True:
-                _hash = self.hash(block_string)
                 modify_block_flag, current_hash = self.valid_proof(self.proof, _hash)
                 if self.proof % 10000 == 0:
                     self.__modify_count += self.proof
                     if self.__modify_count > MAX_COUNT:
                         return None
-                self.proof += 1
                 print(self.proof)
                 if modify_block_flag is True:
                     break
+                self.proof += 1
+
         return current_hash
 
     @staticmethod
@@ -290,39 +256,3 @@ app = Flask(__name__)
 
 # Generate a globally unique address for this node
 node_identifier = str(uuid4()).replace('-', '')
-
-
-@app.route('/nodes/register', methods=['POST'])
-def register_nodes():
-    values = request.get_json()
-
-    nodes = values.get('nodes')
-    if nodes is None:
-        return "Error: Please supply a valid list of nodes", 400
-
-    for node in nodes:
-        Blockchain.register_node(node)
-
-    response = {
-        'message': 'New nodes have been added',
-        'total_nodes': list(Blockchain.nodes),
-    }
-    return jsonify(response), 201
-
-
-@app.route('/nodes/resolve', methods=['GET'])
-def consensus():
-    replaced = Blockchain.resolve_conflicts()
-
-    if replaced:
-        response = {
-            'message': 'Our chain was replaced',
-            'new_chain': Blockchain.chain
-        }
-    else:
-        response = {
-            'message': 'Our chain is authoritative',
-            'chain': Blockchain.chain
-        }
-
-    return jsonify(response), 200

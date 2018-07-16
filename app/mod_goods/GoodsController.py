@@ -12,7 +12,6 @@ new_flag = False
 @app.route('/searchGoods')
 def search_goods():
     if hasattr(g, 'userid'):
-        print(g.userid)
         return render_template('searchGoods.html')
     return redirect(url_for('login'))
 
@@ -20,7 +19,6 @@ def search_goods():
 @app.route('/showGoods')
 def show_goods():
     if hasattr(g, 'userid'):
-        print(g.userid)
         return render_template('showGoods.html')
     return redirect(url_for('login'))
 
@@ -28,15 +26,12 @@ def show_goods():
 @app.route('/createGoods')
 def create_goods():
     if hasattr(g, 'userid'):
-        print(g.role)
-        print(len(subscriber.block_chain.chain))
         if g.role == 'Meteria':
             productID = generateUUID()
             return render_template('createGoods.html', type='M', block=productID, role=g.role)
         else:
             chainName = isCanAddGoods(g.role)
             return render_template('createGoods.html', type='O', block=chainName, role=g.role)
-
 
         # if (len(subscriber.block_chain.chain)==0 and g.role=="Meteria") or (len(subscriber.block_chain.chain) == 1 and g.role == "Product") or (len(subscriber.block_chain.chain) == 2 and g.role == "Transport") or (len(subscriber.block_chain.chain) == 3 and g.role == "Sale"):
         #     return render_template('createGoods.html',role=g.role, disabled="false")
@@ -51,8 +46,8 @@ def modify_goods():
         mysql = MysqlService()
         userIn = mysql.getUserInforByID(g.userid)
 
-        chainName=isCanEditGoods(g.role)
-        return render_template('modifyGoods.html',type='M',block=chainName,userrole=g.role)
+        chainName = isCanEditGoods(g.role)
+        return render_template('modifyGoods.html', type='M', block=chainName, userrole=g.role)
     return redirect(url_for('login'))
 
 
@@ -61,7 +56,6 @@ def userInfor():
     if hasattr(g, 'userid'):
         mysql = MysqlService()
         userIn = mysql.getUserInforByID(g.userid)
-        print(userIn)
         return render_template('userInfor.html', userid=g.userid, username=userIn[0], userphone=userIn[1],
                                userrole=userIn[2])
     return redirect(url_for('login'))
@@ -98,11 +92,14 @@ def addGoods():
     discription = request.form['product_des']
     state = request.form['status']
     # add the goods to the blockchain
-    dict = {'product_id': product_id, 'name': product_name, 'address': address, 'date': data, 'description': discription,
+    dict = {'product_id': product_id, 'name': product_name, 'address': address, 'date': data,
+            'description': discription,
             'status': state}
     # block=Blockchain()
     mysql = MysqlService()
     mysql.addChainIdToUser(g.userid, product_id)
+    if subscriber.block_chain.valid_chain() is False:
+        subscriber.synchronizing()
     subscriber.send_message('new block', dict)
     while new_flag is False:
         pass
@@ -125,7 +122,7 @@ def editGoods():
     data = request.form['date']
     discription = request.form['product_des']
     state = request.form['status']
-    index=changeRoleToNum(state)
+    index = changeRoleToNum(state)
     # add the goods to the blockchain
     dict = {'index': index, 'number': product_id, 'name': product_name, 'address': address, 'date': data,
             'description': discription,
@@ -141,39 +138,38 @@ def editGoods():
         return render_template('modifyGoods.html', res='success')
 
 
-
-
 def isCanAddGoods(currentRole):
-    mysql=MysqlService()
+    mysql = MysqlService()
 
-    currentNum=changeRoleToNum(currentRole)
+    currentNum = changeRoleToNum(currentRole)
 
-    canAddChainID=mysql.getCanAddChainID(currentNum-1)
-    print(canAddChainID)
+    canAddChainID = mysql.getCanAddChainID(currentNum - 1)
     return canAddChainID
+
 
 def isCanEditGoods(currentRole):
-    mysql=MysqlService()
+    mysql = MysqlService()
 
-    currentNum=changeRoleToNum(currentRole)
+    currentNum = changeRoleToNum(currentRole)
 
-    canAddChainID=mysql.getCanAddChainID(currentNum)
-    print(canAddChainID)
+    canAddChainID = mysql.getCanAddChainID(currentNum)
     return canAddChainID
 
+
 def changeRoleToNum(role):
-    if role=='Meteria':
+    if role == 'Meteria':
         return 1
-    if role=='Product':
+    if role == 'Product':
         return 2
-    if role=='Transport':
+    if role == 'Transport':
         return 3
-    if role=='Sale':
+    if role == 'Sale':
         return 4
 
+
 def generateUUID():
-    productid_uu=uuid.uuid1()
-    productid_uu_str=str(productid_uu)
-    productid=productid_uu_str[0:8]
-    print('Generate the product id: '+productid)
+    productid_uu = uuid.uuid1()
+    productid_uu_str = str(productid_uu)
+    productid = productid_uu_str[0:8]
+    print('Generate the product id: ' + productid)
     return productid
