@@ -126,21 +126,20 @@ def editGoods():
     data = request.form['date']
     discription = request.form['product_des']
     state = request.form['status']
-    # index = 2
-    # # add the goods to the blockchain
-    # dict = {'index': index, 'number': product_id, 'name': product_name, 'address': address, 'date': data,
-    #         'description': discription,
-    #         'status': state}
-    # # block=Blockchain()
-    # # subscriber.send_message('modify block', dict)
-    # result = subscriber.block_chain.modify_block(dict)
-    # if result == None:
-    return render_template('modifyGoods.html', res='fail')
-    # if res is not None:
-    #     return render_template('createGoods.html', res='success')
-    # else:
-    #     return render_template('createGoods.html', res='fail')
-    #return render_template('modifyGoods.html', res='success')
+    index=changeRoleToNum(state)
+    # add the goods to the blockchain
+    dict = {'index': index, 'number': product_id, 'name': product_name, 'address': address, 'date': data,
+            'description': discription,
+            'status': state}
+    print(b'get')
+    # block=Blockchain()
+    # subscriber.send_message('modify block', dict)
+    print("modify process:")
+    result = subscriber.block_chain.modify_block(dict)
+    if result == None:
+        return render_template('modifyGoods.html', res='fail')
+    else:
+        return render_template('modifyGoods.html', res='success')
 
 @app.route('/user/tourist', methods=['GET'])
 def enterTouristMode():
