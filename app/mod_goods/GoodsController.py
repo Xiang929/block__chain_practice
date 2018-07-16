@@ -32,6 +32,7 @@ def create_goods():
         print(len(subscriber.block_chain.chain))
         if g.role == 'Meteria':
             productID = generateUUID()
+            productID.strip()
             return render_template('createGoods.html', type='M', block=productID, role=g.role)
         else:
             chainName = isCanAddGoods(g.role)
@@ -141,7 +142,18 @@ def editGoods():
     #     return render_template('createGoods.html', res='fail')
     #return render_template('modifyGoods.html', res='success')
 
+@app.route('/user/tourist', methods=['GET'])
+def enterTouristMode():
+    chainName_m = isCanEditGoods('Meteria')
+    chainName_p = isCanEditGoods('Product')
+    chainName_t = isCanEditGoods('Transport')
+    chainName_s = isCanEditGoods('Sale')
 
+    chainName=chainName_m+chainName_p+chainName_t+chainName_s
+    chainName_set=set(chainName)
+    chainName=list(chainName_set)
+
+    return render_template('touristMode.html', type='O', block=chainName)
 
 
 def isCanAddGoods(currentRole):

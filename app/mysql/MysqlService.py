@@ -38,7 +38,7 @@ class MysqlService:
             self.db.rollback()
 
     def UpdateMessage(self, name, phone,id):
-        sql = "UPDATE blockchain_tbl SET name='%s',phone='%s' where id='%s'" % (name, phone,id)
+        sql = "UPDATE blockchain_tbl SET name='%s',phone='%s' where id='%s'" % (name, phone, id)
         try:
             self.cursor.execute(sql)
             self.db.commit()
@@ -83,8 +83,10 @@ class MysqlService:
             self.db.commit()
             print('Add the chain: '+uuid)
         except:
+            print()
             print('Add chain failed')
             self.db.rollback()
+
 
     def getCanAddChainID(self,roleNum):
         if roleNum==1:
