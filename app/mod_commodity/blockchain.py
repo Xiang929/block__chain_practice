@@ -1,7 +1,6 @@
 import hashlib
 import json
 from time import time
-from urllib.parse import urlparse
 from uuid import uuid4
 
 from flask import Flask, jsonify
@@ -18,21 +17,6 @@ class Blockchain:
         self.nodes = set()
         self.proof = 0
         self.__modify_count = 0
-
-    def register_node(self, address):
-        """
-        Add a new node to the list of nodes
-        :param address: Address of node. Eg. 'http://192.168.0.5:5000'
-        """
-
-        parsed_url = urlparse(address)
-        if parsed_url.netloc:
-            self.nodes.add(parsed_url.netloc)
-        elif parsed_url.path:
-            # Accepts an URL without scheme like '192.168.0.5:5000'.
-            self.nodes.add(parsed_url.path)
-        else:
-            raise ValueError('Invalid URL')
 
     def valid_chain(self):
         """
@@ -161,7 +145,6 @@ class Blockchain:
         block_string = json.dumps(block).encode()
         _hash = self.hash(block_string)
         self.proof = 0
-        print(block_string)
         if modify is False:
             while True:
                 new_block_flag, current_hash = self.valid_proof(self.proof, _hash)

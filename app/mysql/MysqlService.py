@@ -82,7 +82,6 @@ class MysqlService:
             self.db.commit()
             print('Add the chain: '+uuid)
         except:
-            print()
             print('Add chain failed')
             self.db.rollback()
 
@@ -99,7 +98,6 @@ class MysqlService:
 
         # sql_chain = "SELECT role='%s', group_concat(chain separator ' ') from blockchain_tbl group by role" % (RoleName)
         sql_chain="SELECT chain from blockchain_tbl where role ='%s'" % (RoleName)
-        print(sql_chain)
         self.cursor.execute(sql_chain)
         results = self.cursor.fetchall()
 
@@ -111,7 +109,6 @@ class MysqlService:
                 row_list = list(set(row_list))
                 pre += row_list
         pre = list(set(pre))
-        print(pre)
         chainName=pre
         return chainName
 

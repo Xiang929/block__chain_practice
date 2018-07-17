@@ -1,6 +1,8 @@
-import zmq
 import json
+
+import zmq
 import zmq.asyncio
+
 from config import *
 
 
@@ -12,6 +14,7 @@ class Publisher(object):
         self.socket = self.context.socket(zmq.PUB)
         self.chain = []
         self.socket.bind('tcp://{0}:{1}'.format(host, port))
+        self.index_list = []
 
     def publisher_rep(self):
         context = zmq.Context.instance()
@@ -27,8 +30,10 @@ class Publisher(object):
             elif topic == b'new block finished':
                 block_string = bytes.decode(body)
                 block_obj = json.loads(block_string)
-                self.chain.append(block_obj)
-                self.publisher_publish(topic, body)
+                if block_obj['index'] not in self.index_list:
+                    self.index_list.append(block_obj['index'])
+                    self.chain.append(block_obj)
+                    self.publisher_publish(topic, body)
                 socket.send(b'received')
             elif topic == b'modify block':
                 self.publisher_publish(topic, body)
