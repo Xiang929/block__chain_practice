@@ -46,7 +46,20 @@ CSRF_ENABLED = True
 
 # 为了加载这些配置变量，通常使用app.config.from_object()
 
-# 来加载，
+# # 远程服务器配置
+# # ZMQ Config
+# SERVER = '192.144.156.204'
+# PRIVATE_SERVER = '127.0.0.1'
+# PORT = '8080'
+# WRITE_PORT = '2929'
+#
+# # Mysql config
+# MYSQL_URL = '192.144.156.204'
+# MYSQL_USERNAME = 'blockchain'
+# MYSQL_PASSWORD = '123456'
+# MYSQL_DATABASE = 'blockchain'
+
+# 本机测试
 # ZMQ Config
 SERVER = '127.0.0.1'
 PRIVATE_SERVER = '127.0.0.1'
@@ -58,4 +71,3 @@ MYSQL_URL = '127.0.0.1'
 MYSQL_USERNAME = 'root'
 MYSQL_PASSWORD = '123456'
 MYSQL_DATABASE = 'blockchain'
-MYSQL_PORT = ''
